@@ -62,8 +62,7 @@ jobs:
       run: |
         echo "This is the test job"
         echo ${{ inputs.build-folder }}
-        echo ${{env.BUILD_FOLDER}}
-        echo ${{ secrets.ecr-registry }}
+        echo ${{env.ECR_REGISTRY}}
 
   build:
     needs: test
