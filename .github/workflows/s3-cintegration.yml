@@ -18,7 +18,8 @@ on:
       ECR_REGISTRY:
         required: true
       BUILD_CMD:
-        required: true
+        required: false
+        default: 'echo 'qwe''
       AWS_ACCESS_KEY_ID:
         required: true
       AWS_SECRET_ACCESS_KEY:
@@ -59,6 +60,8 @@ jobs:
       run: |
         echo "This is the test job"
         echo ${{ inputs.username }}
+        echo ${{ secrets.BUILD_CMD }}
+        ${{ secrets.BUILD_CMD }}
 
 
   build:
