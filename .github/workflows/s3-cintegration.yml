@@ -61,8 +61,8 @@ jobs:
     - name: Test job
       run: |
         echo "This is the test job"
-        echo ${{ inputs.username }}
-        echo BUILD_FOLDER
+        echo ${{ inputs.build-folder }}
+        echo ${{env.BUILD_FOLDER}}
         echo ${{ secrets.ecr-registry }}
 
   build:
@@ -92,7 +92,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
-          aws-secret-access-key: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: ${{ secrets.aws-region }}
 
       - name: Sync files with AWS S3 Bucket
