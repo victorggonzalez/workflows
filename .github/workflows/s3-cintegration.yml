@@ -23,7 +23,8 @@ on:
 
 env:
   # default build directory
-  BUILD_FOLDER: 'build'
+  # BUILD_FOLDER: 'build'
+  BUILD_FOLDER: 'result/build'
   VERSION: 'latest'
 
   # rename necessary variables used in the app
@@ -68,9 +69,10 @@ jobs:
       - name: Yarn build dev
         id: build-image
         run: |
+          cd result
           yarn install
           echo ${{ secrets.ECR_REGISTRY }}
-          yarn build
+          yarn run build
 
       - name: Configure AWS Credentials
         id: configure-aws
