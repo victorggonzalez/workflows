@@ -16,16 +16,16 @@ on:
         type: string
     secrets:
       ECR_REGISTRY:
-        required: true
-      BUILD_CMD:
         required: false
       AWS_ACCESS_KEY_ID:
         required: true
       AWS_SECRET_ACCESS_KEY:
         required: true
+      AWS_REGION:
+        required: true
       AWS_S3_BUCKET_NAME:
         required: true
-      AWS_REGION:
+      CLOUDFRONT_DISTRIBUTION:
         required: true
 
   # Allows you to run this workflow manually from the Actions tab
@@ -116,4 +116,4 @@ jobs:
 
     - name: Invalidate cloudfront distribution
       id: invalidate-cloudfront
-      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DEV_CLOUDFRONT_DISTRIBUTION }} --paths /*
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION }} --paths /*
