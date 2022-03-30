@@ -15,7 +15,7 @@ on:
         required: true
         type: string
     secrets:
-      envPAT:
+      ECR_REGISTRY:
         required: true
 
   # Allows you to run this workflow manually from the Actions tab
@@ -48,7 +48,7 @@ jobs:
       run: |
         echo "This is the test job"
         echo ${{ inputs.username }}
-        echo ${{ secrets.envPAT }}
+        echo ${{ secrets.ECR_REGISTRY }}
 
   build:
     needs: test
@@ -69,6 +69,7 @@ jobs:
         id: build-image
         run: |
           yarn install
+          echo ${{ secrets.ECR_REGISTRY }}
           yarn build
 
       - name: Configure AWS Credentials
