@@ -19,7 +19,6 @@ on:
         required: true
       BUILD_CMD:
         required: false
-        default: 'echo 'qwe''
       AWS_ACCESS_KEY_ID:
         required: true
       AWS_SECRET_ACCESS_KEY:
