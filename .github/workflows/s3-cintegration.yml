@@ -62,6 +62,7 @@ jobs:
       run: |
         echo "This is the test job"
         echo ${{ inputs.username }}
+        echo BUILD_FOLDER
         echo ${{ secrets.ecr-registry }}
 
   build:
