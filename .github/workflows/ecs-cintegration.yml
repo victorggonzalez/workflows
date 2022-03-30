@@ -116,6 +116,17 @@ jobs:
       id: login-ecr-deploy
       uses: aws-actions/amazon-ecr-login@v1
 
+    - name: Push image to Amazon ECR
+      id: push-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr-build.outputs.registry }}
+        IMAGE_TAG: ${{ steps.tag-number.outputs.tag }}
+      run: |
+        echo $IMAGE_TAG
+        pwd
+        ls -l
+        cat .aws/demo-ci.json
+
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -123,9 +134,8 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
         IMAGE_TAG: ${{ needs.build.outputs.tag }}
       with:
-          task-definition: ${{ secrets.ecs-task-definition }}
+          task-definition: ${{ inputs.ecs-task-definition }}
           container-name: ${{ secrets.container-name }}
-          # image: ${{ needs.build.outputs.image }}
           image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
     - name: Deploy Amazon ECS task definition
