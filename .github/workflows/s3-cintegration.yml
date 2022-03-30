@@ -1,0 +1,104 @@
+name: CI S3 repo
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  #push:
+    #branches:
+    #  - master
+
+  #pull_request:
+  #  branches: [master]
+  workflow_call:
+    inputs:
+      username:
+        required: true
+        type: string
+    secrets:
+      envPAT:
+        required: true
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  # default build directory
+  BUILD_FOLDER: 'build'
+  VERSION: 'latest'
+
+  # rename necessary variables used in the app
+  # REACT_APP_APPS_DEVELOPER_ID: ${{ secrets.APPS_DEVELOPER_ID }}
+  # REACT_APP_APP_ID: ${{ secrets.APP_ID }}
+  # REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
+  # REACT_APP_GRAASP_DOMAIN: ${{ secrets.DEV_GRAASP_DOMAIN }}
+  # REACT_APP_GRAASP_APP_ID: ${{ secrets.APP_ID }}
+  # REACT_APP_MOCK_API: false
+
+jobs:
+  test:
+    name: Test
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      
+    - name: Test job
+      run: |
+        echo "This is the test job"
+        echo ${{ inputs.username }}
+
+  build:
+    needs: test
+    name: Build and sync with S3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        id: setup-node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          check-latest: true
+
+      - name: Yarn build dev
+        id: build-image
+        run: |
+          yarn install
+          yarn build
+
+      - name: Configure AWS Credentials
+        id: configure-aws
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Sync files with AWS S3 Bucket
+        id: sync-s3
+        env:
+          DIR: '${{ secrets.AWS_S3_BUCKET_NAME }}'
+      # --acl public-read makes files publicly readable 
+      # --follow-symlinks fixes some weird symbolic link problems that may come up
+      # --delete permanently deletes files in the S3 bucket that are not present in the latest version of the repository/build.
+        run: aws s3 sync ${{env.BUILD_FOLDER}} s3://${DIR} --acl public-read --follow-symlinks --delete
+
+  deploy: 
+    needs: build
+    name: Deploy to Dev environment
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Invalidate cloudfront distribution
+      id: invalidate-cloudfront
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DEV_CLOUDFRONT_DISTRIBUTION }} --paths /*
