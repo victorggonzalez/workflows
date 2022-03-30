@@ -59,8 +59,8 @@ jobs:
       run: |
         echo "This is the test job"
         echo ${{ inputs.username }}
-        echo ${{ secrets.BUILD_CMD }}
-        ${{ secrets.BUILD_CMD }}
+        echo ${{ secrets.ECR_REGISTRY }}
+        ${{ secrets.ECR_REGISTRY }}
 
 
   build:
@@ -96,7 +96,7 @@ jobs:
       - name: Sync files with AWS S3 Bucket
         id: sync-s3
         env:
-          PATH: '${{ secrets.AWS_S3_BUCKET_NAME }}'
+          PATH: ${{ secrets.AWS_S3_BUCKET_NAME }}
       # --acl public-read makes files publicly readable 
       # --follow-symlinks fixes some weird symbolic link problems that may come up
       # --delete permanently deletes files in the S3 bucket that are not present in the latest version of the repository/build.
