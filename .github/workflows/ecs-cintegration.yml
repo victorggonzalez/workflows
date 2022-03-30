@@ -53,8 +53,8 @@ jobs:
     outputs: 
       tag: ${{ steps.tag-number.outputs.tag }}
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+    - name: Check out code
+      uses: actions/checkout@v2
       
     - name: Set Tag Number
       id: tag-number
