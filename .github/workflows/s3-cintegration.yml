@@ -19,6 +19,14 @@ on:
         required: true
       BUILD_CMD:
         required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_S3_BUCKET_NAME:
+        required: true
+      AWS_REGION:
+        required: true
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,7 +36,6 @@ env:
   # BUILD_FOLDER: 'build'
   BUILD_FOLDER: 'result/build'
   VERSION: 'latest'
-  AWS_REGION: eu-central-1
 
   # rename necessary variables used in the app
   # REACT_APP_APPS_DEVELOPER_ID: ${{ secrets.APPS_DEVELOPER_ID }}
@@ -52,8 +59,7 @@ jobs:
       run: |
         echo "This is the test job"
         echo ${{ inputs.username }}
-        echo ${{ secrets.ECR_REGISTRY }}
-        ${{ secrets.BUILD_CMD }}
+
 
   build:
     needs: test
@@ -75,7 +81,6 @@ jobs:
         run: |
           cd result
           yarn install
-          echo ${{ secrets.ECR_REGISTRY }}
           yarn run build
 
       - name: Configure AWS Credentials
@@ -84,16 +89,16 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Sync files with AWS S3 Bucket
         id: sync-s3
         env:
-          DIR: '${{ secrets.AWS_S3_BUCKET_NAME }}'
+          PATH: '${{ secrets.AWS_S3_BUCKET_NAME }}'
       # --acl public-read makes files publicly readable 
       # --follow-symlinks fixes some weird symbolic link problems that may come up
       # --delete permanently deletes files in the S3 bucket that are not present in the latest version of the repository/build.
-        run: aws s3 sync ${{env.BUILD_FOLDER}} s3://${DIR} --acl public-read --follow-symlinks --delete
+        run: aws s3 sync ${{env.BUILD_FOLDER}} s3://${PATH} --acl public-read --follow-symlinks --delete
 
   deploy: 
     needs: build
@@ -105,7 +110,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Invalidate cloudfront distribution
       id: invalidate-cloudfront
