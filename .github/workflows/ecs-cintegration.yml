@@ -16,8 +16,6 @@ on:
         required: true
       aws-region:
         required: true
-      ecr-registry:
-        required: true           
       ecs-cluster:
         required: true
       ecs-service:
@@ -31,7 +29,6 @@ env:
   ECS_TASK_DEFINITION: ${{ inputs.ecs-task-definition }}
   CONTAINER_NAME: ${{ secrets.container-name }}
   ECR_REPOSITORY: ${{ secrets.ecr-repository }}
-  ECR_REGISTRY: ${{ secrets.ecr-registry }}
 
 jobs:
   test:
@@ -115,17 +112,6 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr-deploy
       uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Push image to Amazon ECR
-      id: push-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr-build.outputs.registry }}
-        IMAGE_TAG: ${{ steps.tag-number.outputs.tag }}
-      run: |
-        echo $IMAGE_TAG
-        pwd
-        ls -l
-        cat .aws/demo-ci.json
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
