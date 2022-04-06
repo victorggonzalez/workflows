@@ -28,6 +28,10 @@ on:
         required: true
       aws-s3-bucket-name:
         required: true
+      app-id:
+        required: true
+      graasp-domain-dev:
+        required: true
       cloudfront-distribution:
         required: true
 
@@ -44,9 +48,6 @@ env:
   # REACT_APP_APPS_DEVELOPER_ID: ${{ secrets.APPS_DEVELOPER_ID }}
   # REACT_APP_APP_ID: ${{ secrets.APP_ID }}
   # REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
-  # REACT_APP_GRAASP_DOMAIN: ${{ secrets.DEV_GRAASP_DOMAIN }}
-  # REACT_APP_GRAASP_APP_ID: ${{ secrets.APP_ID }}
-  # REACT_APP_MOCK_API: false
 
 jobs:
   test:
@@ -81,8 +82,15 @@ jobs:
 
       - name: Yarn build dev
         id: build-image
+        env:
+          REACT_APP_GRAASP_DOMAIN: ${{ secrets.graasp-domain-dev }}
+          REACT_APP_GRAASP_APP_ID: ${{ secrets.app-id }}
+          REACT_APP_MOCK_API: false
         run: |
           cd result
+          echo $REACT_APP_GRAASP_DOMAIN
+          echo $REACT_APP_GRAASP_APP_ID
+          echo $REACT_APP_MOCK_API
           yarn install
           yarn run build
 
@@ -97,7 +105,8 @@ jobs:
       - name: Sync files with AWS S3 Bucket
         id: sync-s3
         env:
-          APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
+          # APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
+          APP_DIR: '${{ secrets.aws-s3-bucket-name }}/${{ secrets.app-id }}/${{env.VERSION}}/'
       # --acl public-read makes files publicly readable 
       # --follow-symlinks fixes some weird symbolic link problems that may come up
       # --delete permanently deletes files in the S3 bucket that are not present in the latest version of the repository/build.
