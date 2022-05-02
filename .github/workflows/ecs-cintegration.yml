@@ -22,6 +22,8 @@ on:
         required: true
       container-name:
         required: true
+      container-name-2:
+        required: true
       ecr-repository:
         required: true
       next-public-api-host:
@@ -131,10 +133,21 @@ jobs:
             NEXT_PUBLIC_API_HOST=${{ secrets.next-public-api-host }}
             NEXT_PUBLIC_GRAASP_AUTH_HOST=${{ secrets.next-public-graasp-auth-host }}
 
+    - name: Modify Amazon ECS task definition with second container
+      id: task-def-2
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
+        IMAGE_TAG: ${{ needs.build.outputs.tag }}
+      with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          container-name: ${{ secrets.container-name-2 }}
+          image: notaitech/nudenet:classifier
+
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          task-definition: ${{ steps.task-def-2.outputs.task-definition }}
           service: ${{ secrets.ecs-service }}
           cluster: ${{ secrets.ecs-cluster }}
           wait-for-service-stability: true       
