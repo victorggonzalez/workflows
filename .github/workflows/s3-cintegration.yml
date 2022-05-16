@@ -118,7 +118,7 @@ jobs:
       id: sync-s3
       env:
         # APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
-        APP_DIR: '${{ secrets.aws-s3-bucket-name }}/${{ secrets.app-id }}/${{env.VERSION}}/'
+        APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
     # --acl public-read makes files publicly readable 
     # --follow-symlinks fixes some weird symbolic link problems that may come up
     # --delete permanently deletes files in the S3 bucket that are not present in the latest version of the repository/build.
