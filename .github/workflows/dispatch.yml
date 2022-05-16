@@ -13,4 +13,4 @@ jobs:
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: victorggonzalez/example-voting-app
-          event-type: my-event
+          event-type: staging-deployment

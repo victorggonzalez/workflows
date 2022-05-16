@@ -47,7 +47,6 @@ on:
 
 env:
   # default build directory
-  # BUILD_FOLDER: 'build'
   BUILD_FOLDER: '${{ inputs.build-folder }}'
   VERSION: '${{ inputs.version }}'
 
@@ -94,15 +93,8 @@ jobs:
 
     - name: Yarn build dev
       id: build-image
-      env:
-        REACT_APP_GRAASP_DOMAIN: ${{ secrets.graasp-domain-dev }}
-        REACT_APP_GRAASP_APP_ID: ${{ secrets.app-id }}
-        REACT_APP_MOCK_API: false
       run: |
         cd result
-        echo $REACT_APP_GRAASP_DOMAIN
-        echo $REACT_APP_GRAASP_APP_ID
-        echo $REACT_APP_MOCK_API
         yarn install
         yarn run build
 
