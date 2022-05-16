@@ -19,6 +19,9 @@ on:
         required: false
         default: 'build'
         type: string
+      version:
+        required: true
+        type: string
     secrets:
       ecr-registry:
         required: false
@@ -67,7 +70,8 @@ jobs:
       run: |
         echo "This is the test job"
         echo ${{ inputs.build-folder }}
-        echo ${{env.ECR_REGISTRY}}
+        echo ${{ inputs.version }}
+        echo ${{ env.ECR_REGISTRY }}
 
   build:
     needs: test
@@ -83,6 +87,7 @@ jobs:
         with:
           node-version: '16'
           check-latest: true
+          ref: ${{ inputs.version }}
 
       - name: Yarn build dev
         id: build-image
