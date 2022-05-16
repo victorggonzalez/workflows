@@ -65,8 +65,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.version }}
+      with:
+        ref: ${{ inputs.version }}
       
     - name: Test job
       run: |
