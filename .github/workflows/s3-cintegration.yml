@@ -65,6 +65,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.version }}
       
     - name: Test job
       run: |
@@ -78,48 +80,49 @@ jobs:
     name: Build and sync with S3
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.version }}
 
-      - name: Setup node
-        id: setup-node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-          check-latest: true
-          ref: ${{ inputs.version }}
+    - name: Setup node
+      id: setup-node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        check-latest: true
 
-      - name: Yarn build dev
-        id: build-image
-        env:
-          REACT_APP_GRAASP_DOMAIN: ${{ secrets.graasp-domain-dev }}
-          REACT_APP_GRAASP_APP_ID: ${{ secrets.app-id }}
-          REACT_APP_MOCK_API: false
-        run: |
-          cd result
-          echo $REACT_APP_GRAASP_DOMAIN
-          echo $REACT_APP_GRAASP_APP_ID
-          echo $REACT_APP_MOCK_API
-          yarn install
-          yarn run build
+    - name: Yarn build dev
+      id: build-image
+      env:
+        REACT_APP_GRAASP_DOMAIN: ${{ secrets.graasp-domain-dev }}
+        REACT_APP_GRAASP_APP_ID: ${{ secrets.app-id }}
+        REACT_APP_MOCK_API: false
+      run: |
+        cd result
+        echo $REACT_APP_GRAASP_DOMAIN
+        echo $REACT_APP_GRAASP_APP_ID
+        echo $REACT_APP_MOCK_API
+        yarn install
+        yarn run build
 
-      - name: Configure AWS Credentials
-        id: configure-aws
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.aws-access-key-id }}
-          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
-          aws-region: ${{ secrets.aws-region }}
+    - name: Configure AWS Credentials
+      id: configure-aws
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.aws-access-key-id }}
+        aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+        aws-region: ${{ secrets.aws-region }}
 
-      - name: Sync files with AWS S3 Bucket
-        id: sync-s3
-        env:
-          # APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
-          APP_DIR: '${{ secrets.aws-s3-bucket-name }}/${{ secrets.app-id }}/${{env.VERSION}}/'
-      # --acl public-read makes files publicly readable 
-      # --follow-symlinks fixes some weird symbolic link problems that may come up
-      # --delete permanently deletes files in the S3 bucket that are not present in the latest version of the repository/build.
-        run: aws s3 sync ${{env.BUILD_FOLDER}} s3://${APP_DIR} --acl public-read --follow-symlinks --delete
+    - name: Sync files with AWS S3 Bucket
+      id: sync-s3
+      env:
+        # APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
+        APP_DIR: '${{ secrets.aws-s3-bucket-name }}/${{ secrets.app-id }}/${{env.VERSION}}/'
+    # --acl public-read makes files publicly readable 
+    # --follow-symlinks fixes some weird symbolic link problems that may come up
+    # --delete permanently deletes files in the S3 bucket that are not present in the latest version of the repository/build.
+      run: aws s3 sync ${{env.BUILD_FOLDER}} s3://${APP_DIR} --acl public-read --follow-symlinks --delete
 
   deploy: 
     needs: build
