@@ -27,4 +27,4 @@ jobs:
         repository: victorggonzalez/example-voting-app
         event-type: staging-deployment
         # client-payload: ${{fromJson(steps.set-json.outputs.jsonString)}}
-        client-payload: ${JSON//'%'/'%25'}
+        client-payload: '{"github": ${{ toJson(github) }}}'
