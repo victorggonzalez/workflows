@@ -25,4 +25,5 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         repository: victorggonzalez/example-voting-app
         event-type: staging-deployment
-        client-payload: ${{fromJson(steps.set-json.outputs.jsonString)}}
+        # client-payload: ${{fromJson(steps.set-json.outputs.jsonString)}}
+        client-payload: ${{ toJson(github) }}
