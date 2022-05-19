@@ -18,6 +18,7 @@ jobs:
     - name: Test job
       id: test
       run: |
+        cat versions.json
         echo ${{ github.event.client_payload.repo }}
         echo ${{ github.event.client_payload.tag }}
         REPO=${{ github.event.client_payload.repo }}
@@ -34,3 +35,9 @@ jobs:
       id: cat
       run: |
         cat versions.json
+
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Update versions.json
