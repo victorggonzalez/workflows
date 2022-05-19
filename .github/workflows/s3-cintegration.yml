@@ -19,6 +19,12 @@ on:
         required: false
         default: 'build'
         type: string
+      version:
+        required: true
+        type: string
+      sha:
+        required: true
+        type: string
     secrets:
       ecr-registry:
         required: false
@@ -45,7 +51,7 @@ on:
 env:
   # default build directory
   BUILD_FOLDER: '${{ inputs.build-folder }}'
-  TAG: '${{ github.event.client_payload.ref }}'
+  VERSION: '${{ inputs.version }}'
 
   # rename necessary variables used in the app
   # REACT_APP_APPS_DEVELOPER_ID: ${{ secrets.APPS_DEVELOPER_ID }}
@@ -62,15 +68,14 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
       with:
-        ref: ${{ env.TAG }}
+        ref: ${{ inputs.version }}
       
     - name: Test job
       run: |
         echo "This is the test job"
         echo ${{ inputs.build-folder }}
+        echo ${{ inputs.version }}
         echo ${{ env.ECR_REGISTRY }}
-        echo ${{ github.event.client_payload.tag }}
-        echo ${{ github.event.client_payload.sha }}
 
   build:
     needs: test
@@ -80,7 +85,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
       with:
-        ref: ${{ env.TAG }}
+        ref: ${{ inputs.version }}
 
     - name: Setup node
       id: setup-node
@@ -107,6 +112,7 @@ jobs:
     - name: Sync files with AWS S3 Bucket
       id: sync-s3
       env:
+        # APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
         APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
     # --acl public-read makes files publicly readable 
     # --follow-symlinks fixes some weird symbolic link problems that may come up
