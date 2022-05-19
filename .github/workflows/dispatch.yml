@@ -14,9 +14,7 @@ jobs:
     - name: Test job
       id: set-json
       run: |
-        cat payload.json
         JSON=$(cat ./payload.json)
-        echo $JSON
         echo ::set-output name=jsonString::${JSON//'%'/'%25'}
 
     - name: Repository Dispatch
