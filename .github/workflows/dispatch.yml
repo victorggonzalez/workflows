@@ -15,7 +15,8 @@ jobs:
     - id: set-matrix
       run: |
         JSON=$(cat ./versions.json)
-        echo "::set-output name=matrix2::${JSON//'%'/'%25'}"
+        echo ::set-output name=matrix2::${JSON//'%'/'%25'}
+
   job2:
     needs: job1
     runs-on: ubuntu-latest
