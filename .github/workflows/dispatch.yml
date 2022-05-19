@@ -8,9 +8,10 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: victorggonzalez/example-voting-app
-          event-type: staging-deployment
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        repository: victorggonzalez/example-voting-app
+        event-type: staging-deployment
+        client-payload: '{"tag": "v0.1.0", "sha": "qwerty"}'

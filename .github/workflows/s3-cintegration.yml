@@ -3,11 +3,11 @@ name: CI S3 repo
 # Controls when the action will run.
 on:
   repository_dispatch:
-    types: [my-event]
+    types: [staging-deployment]
   # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    tags:        
-      - v*
+  # push:
+  #   tags:        
+  #     - v*
 
   #pull_request:
   #  branches: [master]
@@ -18,9 +18,6 @@ on:
       build-folder:
         required: false
         default: 'build'
-        type: string
-      version:
-        required: true
         type: string
     secrets:
       ecr-registry:
@@ -43,12 +40,12 @@ on:
         required: false
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  # workflow_dispatch:
 
 env:
   # default build directory
   BUILD_FOLDER: '${{ inputs.build-folder }}'
-  VERSION: '${{ inputs.version }}'
+  TAG: '${{ github.event.client_payload.ref }}'
 
   # rename necessary variables used in the app
   # REACT_APP_APPS_DEVELOPER_ID: ${{ secrets.APPS_DEVELOPER_ID }}
@@ -65,14 +62,15 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
       with:
-        ref: ${{ inputs.version }}
+        ref: ${{ env.TAG }}
       
     - name: Test job
       run: |
         echo "This is the test job"
         echo ${{ inputs.build-folder }}
-        echo ${{ inputs.version }}
         echo ${{ env.ECR_REGISTRY }}
+        echo ${{ github.event.client_payload.tag }}
+        echo ${{ github.event.client_payload.sha }}
 
   build:
     needs: test
@@ -82,7 +80,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
       with:
-        ref: ${{ inputs.version }}
+        ref: ${{ env.TAG }}
 
     - name: Setup node
       id: setup-node
@@ -109,7 +107,6 @@ jobs:
     - name: Sync files with AWS S3 Bucket
       id: sync-s3
       env:
-        # APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
         APP_DIR: '${{ secrets.aws-s3-bucket-name }}'
     # --acl public-read makes files publicly readable 
     # --follow-symlinks fixes some weird symbolic link problems that may come up
