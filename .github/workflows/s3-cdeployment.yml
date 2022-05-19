@@ -5,6 +5,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   repository_dispatch:
     types: [update-staging-version]
+
   workflow_dispatch:
 
 env:
