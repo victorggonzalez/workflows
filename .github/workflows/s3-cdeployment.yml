@@ -8,8 +8,6 @@ on:
 
   workflow_dispatch:
 
-env:
-
 jobs:
   read:
     runs-on: ubuntu-latest
@@ -20,8 +18,18 @@ jobs:
     - name: Test job
       id: test
       run: |
-        echo ${{ github.event.client_payload }}
+        echo ${{ github.event.client_payload.repo }}
+        echo ${{ github.event.client_payload.tag }}
+        REPO=${{ github.event.client_payload.repo }}
+        TAG=${{ github.event.client_payload.tag }}
         
+    - name: Update versions in json file job
+      id: update-json
+      run: |
+        jq 'with_entries( .key as $k | .value = ($ENV."\($k)" // .value ) )' versions.json >> tmp.json
+        cat tmp.json 
+        cat version.json 
+
     - name: Update versions in json file job
       id: update-json
       run: |
