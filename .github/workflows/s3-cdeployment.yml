@@ -23,16 +23,16 @@ jobs:
         REPO=${{ github.event.client_payload.repo }}
         TAG=${{ github.event.client_payload.tag }}
         
-    - name: Update versions in json file job
-      id: update-json
-      run: |
-        jq 'with_entries( .key as $k | .value = ($ENV."\($k)" // .value ) )' versions.json >> tmp.json
-        cat tmp.json 
-        cat version.json 
+    # - name: Update versions in json file job
+    #   id: update-json
+    #   run: |
+    #     jq 'with_entries( .key as $k | .value = ($ENV."\($k)" // .value ) )' versions.json >> tmp.json
+    #     cat tmp.json 
+    #     cat version.json 
 
-    - name: Update versions in json file job
-      id: update-json
-      run: |
-        contents="$(jq '."example-voting-app" = "v0.1.1"' versions.json)" && \
-        echo -E "${contents}" > versions.json
-        cat versions.json 
+    # - name: Update versions in json file 2
+    #   id: update-json-2
+    #   run: |
+    #     contents="$(jq '."example-voting-app" = "v0.1.1"' versions.json)" && \
+    #     echo -E "${contents}" > versions.json
+    #     cat versions.json 
