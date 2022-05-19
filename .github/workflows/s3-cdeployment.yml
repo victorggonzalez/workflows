@@ -9,7 +9,6 @@ on:
   workflow_dispatch:
 
 env:
-  VERSION: ${{ github.event.client_payload.voting-app-tag }}
 
 jobs:
   read:
@@ -19,15 +18,13 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Test job
-      id: set-json
-      run: |
-        echo '${{ toJson(github.repository) }}'
-        echo $VERSION
-
-    - name: job 3
       id: test
       run: |
-        REPOSITORY=$(echo '${{ github.repository }}')
-        REPOSITORY_NAME=$(echo $REPOSITORY | awk -F '/' '{print $2}')
-        echo $REPOSITORY
-        echo $REPOSITORY_NAME
+        echo ${{ github.event.client_payload }}
+        
+    - name: Update versions in json file job
+      id: update-json
+      run: |
+        contents="$(jq '."example-voting-app" = "v0.1.1"' versions.json)" && \
+        echo -E "${contents}" > versions.json
+        cat versions.json 
