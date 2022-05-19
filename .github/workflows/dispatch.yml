@@ -5,22 +5,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  dispatch:
+  job1:
     runs-on: ubuntu-latest
+    outputs:
+      matrix2: ${{ steps.set-matrix.outputs.matrix2 }}
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Test job
-      id: set-json
+    - id: set-matrix
       run: |
-        JSON=$(cat ./payload.json)
-        echo ::set-output name=jsonString::${JSON//'%'/'%25'}
+        JSON=$(cat ./versions.json)
+        echo "::set-output name=matrix2::${JSON//'%'/'%25'}"
 
-    - name: Repository Dispatch
-      uses: peter-evans/repository-dispatch@v2
-      with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: victorggonzalez/example-voting-app
-        event-type: staging-deployment
-        client-payload: ${{steps.set-json.outputs.jsonString}}
+  # dispatch:
+  #   strategy:
+  #     matrix:
+  #       repo: ['victorggonzalez/example-voting-app']
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Check out code
+  #     uses: actions/checkout@v2
+
+  #   - name: Test job
+  #     id: set-json
+  #     run: |
+  #       JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
+  #       echo ::set-output name=jsonString::${JSON//'%'/'%25'}
+
+  #   - name: Repository Dispatch
+  #     uses: peter-evans/repository-dispatch@v2
+  #     with:
+  #       token: ${{ secrets.REPO_ACCESS_TOKEN }}
+  #       repository: ${{ matrix.repo }}
+  #       event-type: staging-deployment
+  #       client-payload: ${{steps.set-json.outputs.jsonString}}

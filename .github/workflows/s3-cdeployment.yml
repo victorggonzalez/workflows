@@ -6,8 +6,6 @@ on:
   repository_dispatch:
     types: [update-staging-version]
 
-  workflow_dispatch:
-
 jobs:
   read:
     runs-on: ubuntu-latest
@@ -15,26 +13,12 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Test job
-      id: test
-      run: |
-        cat versions.json
-        echo ${{ github.event.client_payload.repo }}
-        echo ${{ github.event.client_payload.tag }}
-        REPO=${{ github.event.client_payload.repo }}
-        TAG=${{ github.event.client_payload.tag }}
-
     - name: Update versions.json content
       uses: jossef/action-set-json-field@v1
       with:
         file: versions.json
         field: ${{ github.event.client_payload.repo }}
         value: ${{ github.event.client_payload.tag }}
-
-    - name: Cat job
-      id: cat
-      run: |
-        cat versions.json
 
     - name: Commit step
       id: commit
