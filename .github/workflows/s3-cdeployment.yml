@@ -1,4 +1,4 @@
-name: CI S3 reusable repo
+name: CD S3 reusable repo
 
 # Controls when the action will run.
 on:
@@ -21,5 +21,12 @@ jobs:
     - name: Test job
       id: set-json
       run: |
+        echo '${{ toJson(github.repository) }}'
         echo $VERSION
-        echo '${{ toJson(github) }}'
+
+    - name: job 3
+      id: test
+      run: |
+        echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+        echo $REPOSITORY_NAME
+        echo $GITHUB_ENV
