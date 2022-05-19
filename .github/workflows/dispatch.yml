@@ -16,6 +16,13 @@ jobs:
       run: |
         JSON=$(cat ./versions.json)
         echo "::set-output name=matrix2::${JSON//'%'/'%25'}"
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.job1.outputs.matrix2)}}
+    steps:
+    - run: echo ${{matrix2}}
 
   # dispatch:
   #   strategy:
