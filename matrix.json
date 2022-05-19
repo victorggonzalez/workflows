@@ -1,0 +1,12 @@
+{
+    "include": [
+      {
+        "repo": "victorggonzalez/example-voting-app",
+        "tag": "v0.5.2"
+      },
+      {
+        "repo": "bar",
+        "tag": "Release"
+      }
+    ]
+  }
