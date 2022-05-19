@@ -18,6 +18,7 @@ jobs:
         JSON=$(cat ./payload.json)
         echo $JSON
         echo ::set-output name=jsonString::${JSON//'%'/'%25'}
+        echo github
 
     - name: Repository Dispatch
       uses: peter-evans/repository-dispatch@v2
@@ -26,4 +27,4 @@ jobs:
         repository: victorggonzalez/example-voting-app
         event-type: staging-deployment
         # client-payload: ${{fromJson(steps.set-json.outputs.jsonString)}}
-        client-payload: ${{ toJson(github) }}
+        client-payload: ${JSON//'%'/'%25'}
