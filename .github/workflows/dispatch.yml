@@ -15,7 +15,7 @@ jobs:
       id: set-json
       run: |
         cat payload.json
-        JSON=$(cat ./your.json)
+        JSON=$(cat ./payload.json)
         echo $JSON
         echo ::set-output name=jsonString::${JSON//'%'/'%25'}
 
