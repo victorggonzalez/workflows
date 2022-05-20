@@ -13,15 +13,22 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
+    - name: Get latest versions file
+      id: latest-file
+      run: |
+          LATEST_FILE_NAME=$(ls -Ar | head -n 1)
+          echo ::set-output name=latest::${LATEST_FILE_NAME}
+
     - name: Create new stagingVersions.json file
       env:
         REPOSITORY: ${{ github.event.client_payload.repo }}
         VERSION: ${{ github.event.client_payload.tag }}
+        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: | 
         FILE_NAME=$(echo "`date +"%Y%m%d%H%M"`"-stagingVersions.json)
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         jq --arg version "$VERSION" --arg repository "$REPOSITORY" \
-        '(.include[] | select(.repo == $repository) | .tag) |= $version' ./release-versions/matrix.json > ./release-versions/$FILE_NAME
+        '(.include[] | select(.repo == $repository) | .tag) |= $version' ./release-versions/$LATEST_FILE_NAME > ./release-versions/$FILE_NAME
 
     - name: Commit step
       id: commit
