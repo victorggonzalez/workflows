@@ -22,9 +22,8 @@ jobs:
         echo $FILE_NAME
         tmp=$(mktemp)
         cat ./release-versions/matrix.json | jq --arg version "$VERSION" --arg repository "$REPOSITORY" \
-        '(.include[] | select(.repo == $repository) | .tag) |= $version' > "$tmp" 
-        cp "$tmp" ./release-versions/matrix.json
-        mv "$tmp" ./release-versions/$FILE_NAME
+        '(.include[] | select(.repo == $repository) | .tag) |= $version' > "$tmp" && mv "$tmp" ./release-versions/$FILE_NAME
+        git status
 
     - name: Commit step
       id: commit
