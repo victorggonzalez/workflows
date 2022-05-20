@@ -1,0 +1,34 @@
+name: Update staging versions
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  repository_dispatch:
+    types: [update-staging-version]
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Create new stagingVersions.json file
+      env:
+        REPOSITORY: ${{ github.event.client_payload.repo }}
+        VERSION: ${{ github.event.client_payload.tag }}
+      run: | 
+        FILE_NAME=$(echo ./release-versions/"`date +"%Y%m%d%H%M"`"-stagingVersions.json) >> $GITHUB_ENV
+        tmp=$(mktemp)
+        cat ./release-versions/matrix.json | jq --arg version "$VERSION" --arg repository "$REPOSITORY" \
+        '(.include[] | select(.repo == $repository) | .tag) |= $version' > "$tmp" 
+        cp "$tmp" ./release-versions/matrix.json
+        mv "$tmp" $FILE_NAME
+
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: ${{ env.FILE_NAME }}
+
+
