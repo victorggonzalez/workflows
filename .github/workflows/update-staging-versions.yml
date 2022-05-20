@@ -18,7 +18,8 @@ jobs:
         REPOSITORY: ${{ github.event.client_payload.repo }}
         VERSION: ${{ github.event.client_payload.tag }}
       run: | 
-        echo "FILE_NAME=$(echo ./release-versions/"`date +"%Y%m%d%H%M"`"-stagingVersions.json)" >> $GITHUB_ENV
+        FILE_NAME=$(echo ./release-versions/"`date +"%Y%m%d%H%M"`"-stagingVersions.json)
+        echo ::set-env name=FILE_NAME::$FILE_NAME
         tmp=$(mktemp)
         cat ./release-versions/matrix.json | jq --arg version "$VERSION" --arg repository "$REPOSITORY" \
         '(.include[] | select(.repo == $repository) | .tag) |= $version' > "$tmp" 
