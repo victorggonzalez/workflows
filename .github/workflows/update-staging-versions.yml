@@ -16,8 +16,9 @@ jobs:
     - name: Get latest versions file
       id: latest-file
       run: |
-          LATEST_FILE_NAME=$(ls -Ar | head -n 1)
-          echo ::set-output name=latest::${LATEST_FILE_NAME}
+        cd ./release-versions
+        LATEST_FILE_NAME=$(ls -Ar | head -n 1)
+        echo ::set-output name=latest::${LATEST_FILE_NAME}
 
     - name: Create new stagingVersions.json file
       env:
