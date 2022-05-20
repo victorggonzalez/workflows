@@ -30,12 +30,12 @@ jobs:
     - run: echo ${{matrix.tag}}
 
     - name: Set json output
-        id: set-json
-        env:
-          TAG: ${{matrix.tag}}
-        run: |
-          JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
-          echo ::set-output name=json::${JSON//'%'/'%25'}
+      id: set-json
+      env:
+        TAG: ${{matrix.tag}}
+      run: |
+        JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
+        echo ::set-output name=json::${JSON//'%'/'%25'}
 
     - name: Repository Dispatch
       uses: peter-evans/repository-dispatch@v2
