@@ -21,9 +21,9 @@ jobs:
         FILE_NAME=$(echo "`date +"%Y%m%d%H%M"`"-stagingVersions.json)
         echo $FILE_NAME
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
-        tmp=$(mktemp)
-        cat ./release-versions/matrix.json | jq --arg version "$VERSION" --arg repository "$REPOSITORY" \
-        '(.include[] | select(.repo == $repository) | .tag) |= $version' > "$tmp" &&  mv "$tmp" ./release-versions/$FILE_NAME
+        jq --arg version "$VERSION" --arg repository "$REPOSITORY" \
+        '(.include[] | select(.repo == $repository) | .tag) |= $version' ./release-versions/matrix.json > ./release-versions/$FILE_NAME
+        cat ./release-versions/$FILE_NAME
 
     - name: Commit step
       id: commit
