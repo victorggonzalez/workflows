@@ -5,46 +5,42 @@ on:
   workflow_dispatch:
 
 jobs:
-  job1:
+  generate-matrix:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - id: set-matrix
-      run: |
-        JSON=$(cat ./matrix.json)
-        echo ::set-output name=matrix::${JSON//'%'/'%25'}
 
-  job2:
-    needs: job1
+    - name: Generate matrix
+      id: set-matrix
+      run: |
+        JSON_MATRIX=$(cat ./matrix.json)
+        echo ::set-output name=matrix::${JSON_MATRIX//'%'/'%25'}
+
+  dispatch-continuous-deployment-workflows:
+    needs: generate-matrix
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.job1.outputs.matrix)}}
+      matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     steps:
     - run: echo ${{matrix.repo}}
+
     - run: echo ${{matrix.tag}}
 
-  # dispatch:
-  #   strategy:
-  #     matrix:
-  #       repo: ['victorggonzalez/example-voting-app']
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Check out code
-  #     uses: actions/checkout@v2
+    - name: Set json output
+        id: set-json
+        env:
+          TAG: ${{matrix.tag}}
+        run: |
+          JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
+          echo ::set-output name=json::${JSON//'%'/'%25'}
 
-  #   - name: Test job
-  #     id: set-json
-  #     run: |
-  #       JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
-  #       echo ::set-output name=jsonString::${JSON//'%'/'%25'}
-
-  #   - name: Repository Dispatch
-  #     uses: peter-evans/repository-dispatch@v2
-  #     with:
-  #       token: ${{ secrets.REPO_ACCESS_TOKEN }}
-  #       repository: ${{ matrix.repo }}
-  #       event-type: staging-deployment
-  #       client-payload: ${{steps.set-json.outputs.jsonString}}
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        repository: ${{ matrix.repo }}
+        event-type: staging-deployment
+        client-payload: ${{steps.set-json.outputs.json}}
