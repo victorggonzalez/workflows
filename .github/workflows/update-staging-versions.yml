@@ -24,7 +24,7 @@ jobs:
         tmp=$(mktemp)
         cat ./release-versions/matrix.json | jq --arg version "$VERSION" --arg repository "$REPOSITORY" \
         '(.include[] | select(.repo == $repository) | .tag) |= $version' > "$tmp" 
-        cp "$tmp" ./release-versions/matrix.json
+        cat "$tmp"
         mv "$tmp" ./release-versions/$FILE_NAME
 
     - name: Commit step
