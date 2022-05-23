@@ -151,7 +151,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
         IMAGE_TAG: ${{ needs.build.outputs.tag }}
-      if: ${{ github.repository != 'victorggonzalez/demo-app' }}
+      if: ${{ github.repository != 'victorggonzalez/example-voting-app' }}
       with:
           task-definition: ${{ steps.task-def-2.outputs.task-definition }}
           container-name: ${{ secrets.container-name-2 }}
