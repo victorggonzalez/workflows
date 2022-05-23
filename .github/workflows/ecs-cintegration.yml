@@ -139,15 +139,38 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
         IMAGE_TAG: ${{ needs.build.outputs.tag }}
+      if: ${{ github.repository == 'victorggonzalez/example-voting-app' }}
       with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           container-name: ${{ secrets.container-name-2 }}
           image: notaitech/nudenet:classifier
 
+    - name: Modify Amazon ECS task definition with third container
+      id: task-def-3
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
+        IMAGE_TAG: ${{ needs.build.outputs.tag }}
+      if: ${{ github.repository != 'victorggonzalez/demo-app' }}
+      with:
+          task-definition: ${{ steps.task-def-2.outputs.task-definition }}
+          container-name: ${{ secrets.container-name-2 }}
+          image: notaitech/nudenet:classifier
+
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      if: ${{ github.repository == 'victorggonzalez/example-voting-app' }}
       with:
           task-definition: ${{ steps.task-def-2.outputs.task-definition }}
           service: ${{ secrets.ecs-service }}
           cluster: ${{ secrets.ecs-cluster }}
-          wait-for-service-stability: true       
+          wait-for-service-stability: true
+ 
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      if: ${{ github.repository != 'victorggonzalez/example-voting-app' }}
+      with:
+          task-definition: ${{ steps.task-def-3.outputs.task-definition }}
+          service: ${{ secrets.ecs-service }}
+          cluster: ${{ secrets.ecs-cluster }}
+          wait-for-service-stability: true
