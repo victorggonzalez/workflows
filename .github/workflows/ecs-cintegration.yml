@@ -2,12 +2,18 @@ name: CI ECS repo
 
 # Controls when the action will run.
 on:
+  repository_dispatch:
+    types: [staging-deployment]
   # Allow the workflow to be reusable
   workflow_call:
     inputs:
       ecs-task-definition:
         required: false
         default: '.aws/demo-ci.json'
+        type: string
+      # tag: specify tag version to deploy
+      tag:
+        required: true
         type: string
     secrets:
       aws-access-key-id:
@@ -35,6 +41,7 @@ env:
   ECS_TASK_DEFINITION: ${{ inputs.ecs-task-definition }}
   CONTAINER_NAME: ${{ secrets.container-name }}
   ECR_REPOSITORY: ${{ secrets.ecr-repository }}
+  IMAGE_TAG: '${{ inputs.tag }}'
 
 jobs:
   test:
@@ -44,10 +51,14 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.tag }}
       
     - name: Test job
       run: |
         echo "This is the test job"
+        echo ${{ inputs.tag }}
+        echo $IMAGE_TAG
 
   build:
     needs: test
@@ -58,17 +69,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-      
-    - name: Set Tag Number
-      id: tag-number
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-      
-    - name: Check Tag Release
-      env:
-          RELEASE_VERSION: ${{ steps.tag-number.outputs.tag }}
-      run: |
-          echo $RELEASE_VERSION
-          echo ${{ steps.vars.outputs.tag }}
+      with:
+        ref: ${{ inputs.version }}
 
     - name: Configure AWS Credentials
       id: configure-aws
@@ -86,18 +88,9 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr-build.outputs.registry }}
-        IMAGE_TAG: ${{ steps.tag-number.outputs.tag }}
       run: |
         cd vote
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-
-    - name: Push image to Amazon ECR
-      id: push-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr-build.outputs.registry }}
-        IMAGE_TAG: ${{ steps.tag-number.outputs.tag }}
-      run: |
-        echo $IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   deploy: 
@@ -124,21 +117,19 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       env:
         ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
-        IMAGE_TAG: ${{ needs.build.outputs.tag }}
       with:
-          task-definition: ${{ inputs.ecs-task-definition }}
-          container-name: ${{ secrets.container-name }}
-          image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-          environment-variables: |
-            NEXT_PUBLIC_API_HOST=${{ secrets.next-public-api-host }}
-            NEXT_PUBLIC_GRAASP_AUTH_HOST=${{ secrets.next-public-graasp-auth-host }}
+        task-definition: ${{ inputs.ecs-task-definition }}
+        container-name: ${{ secrets.container-name }}
+        image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        environment-variables: |
+          NEXT_PUBLIC_API_HOST=${{ secrets.next-public-api-host }}
+          NEXT_PUBLIC_GRAASP_AUTH_HOST=${{ secrets.next-public-graasp-auth-host }}
 
     - name: Modify Amazon ECS task definition with second container
       id: task-def-2
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       env:
         ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
-        IMAGE_TAG: ${{ needs.build.outputs.tag }}
       if: ${{ github.repository == 'victorggonzalez/example-voting-app' }}
       with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
@@ -150,7 +141,6 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       env:
         ECR_REGISTRY: ${{ steps.login-ecr-deploy.outputs.registry }}
-        IMAGE_TAG: ${{ needs.build.outputs.tag }}
       if: ${{ github.repository != 'victorggonzalez/example-voting-app' }}
       with:
           task-definition: ${{ steps.task-def-2.outputs.task-definition }}
