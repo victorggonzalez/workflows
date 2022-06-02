@@ -44,3 +44,7 @@ jobs:
         repository: ${{ matrix.repo }}
         event-type: staging-deployment
         client-payload: ${{steps.set-json.outputs.json}}
+
+    - name: Check api Version and Status before next dispatch
+      if:  ${{ matrix.repo }} == victorggonzalez/example-voting-app
+      run: sleep 60
