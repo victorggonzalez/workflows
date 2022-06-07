@@ -1,0 +1,44 @@
+name: Deploy new stack to staging environment
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-matrix:
+    name: Generate matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    environment: 
+      name: staging
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Get latest versions file
+      id: latest-file
+      run: |
+        cd ./release-versions
+        LATEST_FILE_NAME=$(ls -Ar | head -n 1)
+        echo ::set-output name=latest::${LATEST_FILE_NAME}
+
+    - name: Generate matrix
+      id: set-matrix
+      env:
+        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
+      run: |
+        cd ./release-versions
+        LATEST_FILE=$(cat $LATEST_FILE_NAME)
+        echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
+
+  dispatch-backend:
+    name: Dispatch Continuous Delivery workflow in backend
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    env: 
+      MATRIX: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+    steps:
+    - run: |
+      cat $MATRIX
+      echo $MATRIX
