@@ -6,20 +6,32 @@ on:
 
 jobs:
   generate-matrix:
+    name: Generate matrix
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+    environment: 
+      name: staging
     steps:
     - name: Check out code
       uses: actions/checkout@v2
 
+    - name: Get latest versions file
+      id: latest-file
+      run: |
+        cd ./release-versions
+        LATEST_FILE_NAME=$(ls -Ar | head -n 1)
+        echo ::set-output name=latest::${LATEST_FILE_NAME}
+
     - name: Generate matrix
       id: set-matrix
+      env:
+        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
-        JSON_MATRIX=$(cat ./matrix.json)
-        echo ::set-output name=matrix::${JSON_MATRIX//'%'/'%25'}
+        echo ::set-output name=matrix::${LATEST_FILE_NAME//'%'/'%25'}
 
-  dispatch-continuous-deployment-workflows:
+  dispatch:
+    name: Dispatch Continuous Delivery workflows
     needs: generate-matrix
     runs-on: ubuntu-latest
     strategy:
@@ -46,5 +58,5 @@ jobs:
         client-payload: ${{steps.set-json.outputs.json}}
 
     - name: Check api Version and Status before next dispatch
-      if:  ${{ matrix.repo }} == victorggonzalez/example-voting-app
+      if:  ${{ matrix.repo == 'victorggonzalez/example-voting-app' }} 
       run: sleep 60
