@@ -41,20 +41,22 @@ jobs:
       id: get-status
       run: echo "::set-output name=status::$(curl -s https://api.graasp.org/status)"
 
-    # ## Do your job here
-    # - name: Fake work
-    #   id: workStep
-    #   if:  ${{ steps.get-status.outputs.status == env.TAG }} 
-    #   with:
-    #     token: ${{ secrets.REPO_ACCESS_TOKEN }}
-    #     repository: victorggonzalez/workflows
-    #     event-type: check-status
-    #     client-payload: '{"tag": "${{ env.TAG }}", "attemptNumber": "${{steps.getNextAttemptNumber.outputs.result}}"}'
+    ## Do your job here
+    - name: True step
+      id: TrueWorkStep
+      if:  ${{ steps.get-status.outputs.status == '2' }} 
+      # if:  ${{ steps.get-status.outputs.status == env.TAG }} 
+      continue-on-error: true
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        repository: victorggonzalez/workflows
+        event-type: deploy-stack
 
     ## Do your job here
-    - name: Fake work
-      id: actualWorkStep
-      if:  ${{ steps.get-status.outputs.status != env.TAG }} 
+    - name: False step
+      id: falseWorkStep
+      if:  ${{ steps.get-status.outputs.status != '2' }} 
+      # if:  ${{ steps.get-status.outputs.status != env.TAG }} 
       continue-on-error: true
       run: |
         sleep 30
