@@ -1,4 +1,4 @@
-name: Deploy new stack to staging environment
+name: stack to staging environment
 
 # Controls when the action will run.
 on:
