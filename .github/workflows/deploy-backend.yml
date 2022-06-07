@@ -33,6 +33,10 @@ jobs:
         LATEST_FILE=$(cat $LATEST_FILE_NAME)
         echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
 
+    - run: echo "$MATRIX"
+      env:
+        MATRIX: ${{tojson( steps.set-matrix.outputs.matrix)}}
+
   dispatch-backend:
     name: Dispatch Continuous Delivery workflow in backend
     needs: generate-matrix
