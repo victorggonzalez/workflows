@@ -43,7 +43,7 @@ jobs:
 
     ## Do your job here
     - name: True step
-      id: TrueWorkStep
+      id: trueWorkStep
       uses: peter-evans/repository-dispatch@v2
       if:  ${{ steps.get-status.outputs.status == '2' }} 
       # if:  ${{ steps.get-status.outputs.status == env.TAG }} 
@@ -69,7 +69,7 @@ jobs:
       ## If actualWorkStep failed and maxAttempts hasn't 
       ## been reached
       if: |
-        steps.actualWorkStep.outcome != 'success' &&
+        steps.trueWorkStep.outcome != 'success' &&
         steps.getNextAttemptNumber.outputs.result
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
