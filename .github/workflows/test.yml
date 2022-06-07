@@ -67,7 +67,7 @@ jobs:
       run: echo "::set-output name=releasetag::$(curl -s https://api.graasp.org/status)"
 
     - name: get status
-      id: get-status
+      id: echo-status
       env:
         STATUS: ${{ steps.get-status.outputs.releasetag }}
       run: echo $STATUS
