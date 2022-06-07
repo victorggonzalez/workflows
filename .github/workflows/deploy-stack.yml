@@ -38,7 +38,8 @@ jobs:
     needs: generate-matrix
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+      matrix: 
+        ${{ insert }}: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
         exclude:
           # excludes example-voting-app
           - repo: 'victorggonzalez/example-voting-app'
