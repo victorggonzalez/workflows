@@ -37,11 +37,12 @@ jobs:
     needs: generate-matrix
     runs-on: ubuntu-latest
     env: 
-      MATRIX: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
       # REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
       # TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
     steps:
     - name: test matrix
       id: test-matrix
       run: |
-        echo $MATRIX
+        echo ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+        echo ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
+        echo ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
