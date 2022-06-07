@@ -36,6 +36,7 @@ jobs:
       id: test-input
       run: |
         echo $TAG
+        echo $LATEST_FILE_NAME
         echo $attemptNumber
 
     - name: Check api Version and Status before next dispatch

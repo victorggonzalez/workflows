@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      fileName: ${{ steps.latest-file.outputs.latest }}
     environment: 
       name: staging
     steps:
@@ -39,20 +40,21 @@ jobs:
     env: 
       REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
       TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
+      LATEST_FILE_NAME: ${{needs.generate-matrix.outputs.fileName}}
     steps:
     - name: test matrix
       id: test-matrix
       run: |
-        echo ${{fromJson(needs.generate-matrix.outputs.matrix)}}
         echo $REPO
         echo $TAG
+        echo $LATEST_FILE_NAME
 
     - name: Set json output
       id: set-json
       env:
         TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
       run: |
-        JSON=$(jq --null-input --arg tag "$TAG" --arg file "$LATEST_FILE_NAME" '{"tag": $tag, "file": $file, "attemptNumber": 1}')
+        JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
         echo ::set-output name=json::${JSON//'%'/'%25'}
 
     # Dispatch deployment
@@ -71,4 +73,4 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         repository: victorggonzalez/workflows
         event-type: check-status
-        client-payload: ${{steps.set-json.outputs.json}}
+        client-payload: '{"tag": "${{ env.TAG }}, "file": "${{ env.LATEST_FILE_NAME }}", "attemptNumber": 1}'
