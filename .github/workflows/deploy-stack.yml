@@ -5,6 +5,9 @@ on:
   repository_dispatch:
     types: [deploy-stack]
 
+env:
+  LATEST_FILE_NAME:  ${{ github.event.client_payload.file }}
+
 jobs:
   generate-matrix:
     name: Generate matrix
@@ -17,17 +20,8 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Get latest versions file
-      id: latest-file
-      run: |
-        cd ./release-versions
-        LATEST_FILE_NAME=$(ls -Ar | head -n 1)
-        echo ::set-output name=latest::${LATEST_FILE_NAME}
-
     - name: Generate matrix
       id: set-matrix
-      env:
-        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
         cd ./release-versions
         LATEST_FILE=$(cat $LATEST_FILE_NAME)

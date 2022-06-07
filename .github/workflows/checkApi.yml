@@ -8,6 +8,7 @@ on:
 
 env:
   TAG: ${{ github.event.client_payload.tag }}
+  LATEST_FILE_NAME:  ${{ github.event.client_payload.file }}
   attemptNumber: ${{ github.event.client_payload.attemptNumber }}
 
 jobs:
@@ -52,6 +53,7 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         repository: victorggonzalez/workflows
         event-type: deploy-stack
+        client-payload: '{"file": "${{ env.LATEST_FILE_NAME }}"}'
 
     ## Do your job here
     - name: False step

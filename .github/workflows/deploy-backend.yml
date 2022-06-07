@@ -52,7 +52,7 @@ jobs:
       env:
         TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
       run: |
-        JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag, "attemptNumber": 1}')
+        JSON=$(jq --null-input --arg tag "$TAG" --arg file "$LATEST_FILE_NAME" '{"tag": $tag, "file": $file, "attemptNumber": 1}')
         echo ::set-output name=json::${JSON//'%'/'%25'}
 
     # Dispatch deployment
