@@ -73,4 +73,4 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
         repository: victorggonzalez/workflows
         event-type: check-status
-        client-payload: '{"tag": "${{ env.TAG }}, "file": "${{ env.LATEST_FILE_NAME }}", "attemptNumber": 1}'
+        client-payload: '{"tag": "${{ env.TAG }}", "file": "${{ env.LATEST_FILE_NAME }}", "attemptNumber": 1}'
