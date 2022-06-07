@@ -36,7 +36,7 @@ jobs:
     name: Dispatch Continuous Delivery workflow in backend
     needs: generate-matrix
     runs-on: ubuntu-latest
-    env: 
+    # env: 
       # REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
       # TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
     steps:
