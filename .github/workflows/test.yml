@@ -1,4 +1,4 @@
-name: Deploy new stack to staging environment
+name: TEST new stack to staging environment
 
 # Controls when the action will run.
 on:
@@ -38,12 +38,10 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       MATRIX: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
-      REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
-      TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
+      # REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
+      # TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
     steps:
     - name: test matrix
       id: test-matrix
       run: |
         echo $MATRIX
-        echo $REPO
-        echo $TAG
