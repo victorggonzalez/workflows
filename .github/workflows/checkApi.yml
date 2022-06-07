@@ -19,7 +19,7 @@ jobs:
       id: getNextAttemptNumber
       uses: cardinalby/js-eval-action@v1
       env:
-        maxAttempts: '20'
+        maxAttempts: '5'
       with:
         expression: |
           {
@@ -41,15 +41,27 @@ jobs:
       id: get-status
       run: echo "::set-output name=status::$(curl -s https://api.graasp.org/status)"
 
+    # ## Do your job here
+    # - name: Fake work
+    #   id: workStep
+    #   if:  ${{ steps.get-status.outputs.status == env.TAG }} 
+    #   with:
+    #     token: ${{ secrets.REPO_ACCESS_TOKEN }}
+    #     repository: victorggonzalez/workflows
+    #     event-type: check-status
+    #     client-payload: '{"tag": "${{ env.TAG }}", "attemptNumber": "${{steps.getNextAttemptNumber.outputs.result}}"}'
+
     ## Do your job here
     - name: Fake work
       id: actualWorkStep
       if:  ${{ steps.get-status.outputs.status != env.TAG }} 
       continue-on-error: true
-      run: 'exit 1'
+      run: |
+        sleep 30
+        'exit 1'
 
     ## Call itself again
-    - name: Check api Version and Status before next dispatch
+    - name: Trigger next dispatch
       uses: peter-evans/repository-dispatch@v2
       ## If actualWorkStep failed and maxAttempts hasn't 
       ## been reached
