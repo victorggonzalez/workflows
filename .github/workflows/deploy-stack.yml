@@ -41,7 +41,7 @@ jobs:
       matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
         exclude:
           # excludes example-voting-app
-          - repo: victorggonzalez/example-voting-app
+          - repo: 'victorggonzalez/example-voting-app'
     steps:
     - run: echo ${{matrix.repo}}
 

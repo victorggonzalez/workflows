@@ -44,6 +44,7 @@ jobs:
     ## Do your job here
     - name: True step
       id: TrueWorkStep
+      uses: peter-evans/repository-dispatch@v2
       if:  ${{ steps.get-status.outputs.status == '2' }} 
       # if:  ${{ steps.get-status.outputs.status == env.TAG }} 
       continue-on-error: true
