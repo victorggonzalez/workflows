@@ -1,0 +1,54 @@
+name: Check API status
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  repository_dispatch:
+    types: [check-status]
+
+env:
+  TAG: ${{ github.event.client_payload.tag }}
+  attemptNumber: ${{ github.event.client_payload.attemptNumber }}
+
+jobs:
+  doTheRestOfTheWork:
+    name: Check Api
+    runs-on: ubuntu-latest  
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: test input
+      id: test-input
+      run: |
+        echo $TAG
+        echo $attemptNumber
+
+    - name: Check api Version and Status before next dispatch
+      id: get-status
+      run: echo "::set-output name=releasetag::$(curl -s https://api.graasp.org/status)"
+
+    - name: echo status
+      id: echo-status
+      env:
+        STATUS: ${{ steps.get-status.outputs.releasetag }}
+      run: echo $STATUS
+
+    # ## Call itself again
+    # - uses: benc-uk/workflow-dispatch@v1
+    #   ## If actualWorkStep failed and maxAttempts hasn't 
+    #   ## been reached
+    #   if: |
+    #     steps.actualWorkStep.outcome != 'success' &&
+    #     steps.getNextAttemptNumber.outputs.result
+    #   with:
+    #     ## Pass the name of this workflow
+    #     workflow: ${{ github.workflow }}
+    #     token: ${{ secrets.PERSONAL_TOKEN }}
+    #     ## Pass increased attemptNumber and current maxAttempts
+    #     inputs: |
+    #       { 
+    #         "attemptNumber":
+    #             "${{steps.getNextAttemptNumber.outputs.result}}",
+    #         "maxAttempts": 
+    #             "${{github.event.inputs.maxAttempts}}"
+    #       }
