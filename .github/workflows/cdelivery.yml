@@ -28,7 +28,8 @@ jobs:
       env:
         LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
-        echo ::set-output name=matrix::${LATEST_FILE_NAME//'%'/'%25'}
+        LATEST_FILE=$(cat ./LATEST_FILE_NAME)
+        echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
 
   dispatch:
     name: Dispatch Continuous Delivery workflows
