@@ -36,10 +36,13 @@ jobs:
     strategy:
       matrix: 
         ${{ insert }}: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
-        exclude:
-          # excludes example-voting-app
-          - repo: victorggonzalez/example-voting-app
+        # exclude:
+        #   # excludes example-voting-app
+        #   - "repo": victorggonzalez/example-voting-app
     steps:
+    - run: echo "$MATRIX"
+      env:
+        MATRIX: ${{tojson(matrix)}}
     - run: echo ${{matrix.repo}}
 
     - run: echo ${{matrix.tag}}
