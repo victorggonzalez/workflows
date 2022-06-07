@@ -15,6 +15,20 @@ jobs:
     name: Check Api
     runs-on: ubuntu-latest  
     steps:
+    - name: Get the next attempt number
+      id: getNextAttemptNumber
+      uses: cardinalby/js-eval-action@v1
+      env:
+        maxAttempts: '20'
+      with:
+        expression: |
+          {
+            const 
+              attempt = parseInt(env.attemptNumber),
+              max = parseInt(env.maxAttempts);
+            assert(attempt && max && max >= attempt);
+            return attempt < max ? attempt + 1 : '';
+          }
     - uses: actions/checkout@v2
 
     - name: test input
@@ -25,30 +39,25 @@ jobs:
 
     - name: Check api Version and Status before next dispatch
       id: get-status
-      run: echo "::set-output name=releasetag::$(curl -s https://api.graasp.org/status)"
+      run: echo "::set-output name=status::$(curl -s https://api.graasp.org/status)"
 
-    - name: echo status
-      id: echo-status
-      env:
-        STATUS: ${{ steps.get-status.outputs.releasetag }}
-      run: echo $STATUS
+    ## Do your job here
+    - name: Fake work
+      id: actualWorkStep
+      if:  ${{ steps.get-status.outputs.status != env.TAG }} 
+      continue-on-error: true
+      run: 'exit 1'
 
-    # ## Call itself again
-    # - uses: benc-uk/workflow-dispatch@v1
-    #   ## If actualWorkStep failed and maxAttempts hasn't 
-    #   ## been reached
-    #   if: |
-    #     steps.actualWorkStep.outcome != 'success' &&
-    #     steps.getNextAttemptNumber.outputs.result
-    #   with:
-    #     ## Pass the name of this workflow
-    #     workflow: ${{ github.workflow }}
-    #     token: ${{ secrets.PERSONAL_TOKEN }}
-    #     ## Pass increased attemptNumber and current maxAttempts
-    #     inputs: |
-    #       { 
-    #         "attemptNumber":
-    #             "${{steps.getNextAttemptNumber.outputs.result}}",
-    #         "maxAttempts": 
-    #             "${{github.event.inputs.maxAttempts}}"
-    #       }
+    ## Call itself again
+    - name: Check api Version and Status before next dispatch
+      uses: peter-evans/repository-dispatch@v2
+      ## If actualWorkStep failed and maxAttempts hasn't 
+      ## been reached
+      if: |
+        steps.actualWorkStep.outcome != 'success' &&
+        steps.getNextAttemptNumber.outputs.result
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        repository: victorggonzalez/workflows
+        event-type: check-status
+        client-payload: '{"tag": "${{ env.TAG }}", "attemptNumber": "${{steps.getNextAttemptNumber.outputs.result}}"}'
