@@ -29,16 +29,30 @@ jobs:
       env:
         MATRIX: ${{tojson( steps.set-matrix.outputs.matrix)}}
 
+  get-backend-tag:
+    name: b tag
+    runs-on: ubuntu-latest
+    env: 
+      B_REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
+      B_TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
+    steps:
+    - name: test
+      id: test
+      run: |
+        echo $REB_REPO
+        echo $B_TAG
+
   dispatch:
     name: Dispatch Continuous Delivery workflows
     needs: generate-matrix
     runs-on: ubuntu-latest
     strategy:
-      matrix: 
-        ${{ insert }}: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
-        # exclude:
-        #   # excludes example-voting-app
-        #   - "repo": victorggonzalez/example-voting-app
+      matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+        # ${{ insert }}: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+        exclude:
+          # excludes example-voting-app
+          - repo: $REB_REPO
+            tag: $B_TAG
     steps:
     - run: echo "$MATRIX"
       env:
