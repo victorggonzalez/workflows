@@ -31,6 +31,7 @@ jobs:
 
   get-backend-tag:
     name: b tag
+    needs: generate-matrix
     runs-on: ubuntu-latest
     env: 
       B_REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
@@ -44,7 +45,7 @@ jobs:
 
   dispatch:
     name: Dispatch Continuous Delivery workflows
-    needs: generate-matrix
+    needs: get-backend-tag
     runs-on: ubuntu-latest
     strategy:
       matrix:
