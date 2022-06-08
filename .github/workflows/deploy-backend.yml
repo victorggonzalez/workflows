@@ -43,6 +43,14 @@ jobs:
       run: |
         STACK=$(jq '(.include[1:] | .[])' ./release-versions/$LATEST_FILE_NAME)
         echo ::set-output name=stack::${STACK//'%'/'%25'}
+    
+    - name: echo
+      id: echo
+      run: |
+        echo ${{ steps.backend.outputs.backendRepository }}
+        echo ${{ steps.backend.outputs.backendTag }}
+        echo ${{ steps.backend.outputs.backendTag }}
+        echo ${{ steps.stack-json.outputs.backendTag }}
 
   dispatch-backend:
     name: Dispatch Continuous Delivery workflow in backend
@@ -50,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       REPOSITORY: ${{(needs.generate-info.outputs.backendRepository)}}
-      TAG: ${{fromJson(needs.generate-info.outputs.backendTag)}}
+      TAG: ${{(needs.generate-info.outputs.backendTag)}}
       LATEST_FILE_NAME: ${{needs.generate-info.outputs.fileName}}
     steps:
     - name: test matrix
