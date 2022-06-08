@@ -6,6 +6,9 @@ on:
   repository_dispatch:
     types: [check-status]
 
+  workflow_dispatch:
+
+
 env:
   TAG: ${{ github.event.client_payload.tag }}
   LATEST_FILE_NAME:  ${{ github.event.client_payload.file }}
