@@ -41,7 +41,7 @@ env:
   ECS_TASK_DEFINITION: ${{ inputs.ecs-task-definition }}
   CONTAINER_NAME: ${{ secrets.container-name }}
   ECR_REPOSITORY: ${{ secrets.ecr-repository }}
-  IMAGE_TAG: '${{ inputs.tag }}'
+  IMAGE_TAG: ${{ inputs.tag }}
 
 jobs:
   test:
