@@ -91,7 +91,7 @@ jobs:
     needs: generate-info
     runs-on: ubuntu-latest
     env: 
-      STACK: ${{(needs.generate-info.outputs.stack)}}
+      STACK: ${{fromJson(needs.generate-info.outputs.stack)}}
     # strategy:
     #   matrix:
     #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
