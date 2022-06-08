@@ -9,9 +9,9 @@ jobs:
     name: Generate info
     runs-on: ubuntu-latest
     outputs:
-      fileName: ${{ steps.latest-file.outputs.latest }}
-      backendRepository: ${{ steps.backend.outputs.repository }}
-      backendTag: ${{ steps.backend2.outputs.tag }}
+      # fileName: ${{ steps.latest-file.outputs.latest }}
+      backendRepository: ${{ steps.backend.outputs.backendRepository }}
+      backendTag: ${{ steps.backend.outputs.backendTag }}
       stack: ${{ steps.stack-json.outputs.stack }}
     # environment: 
     #   name: staging
@@ -91,7 +91,6 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       STACK: ${{(needs.generate-info.outputs.stack)}}
-      LATEST_FILE_NAME: ${{needs.generate-info.outputs.fileName}}
     strategy:
       matrix:
         include: ${{(needs.generate-info.outputs.stack)}}
@@ -100,7 +99,6 @@ jobs:
       id: test-matrix
       run: |
         echo $STACK
-        echo $LATEST_FILE_NAME
     - run: echo ${{matrix.repo}}
 
     - run: echo ${{matrix.tag}}
