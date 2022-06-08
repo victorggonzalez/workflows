@@ -31,9 +31,9 @@ jobs:
       env:
         LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
-        REPOSITORY=$(jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME)
+        REPOSITORY=$(jq -r '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME)
         echo ::set-output name=backendRepository::${REPOSITORY}
-        TAG=$(jq '(.include[:1] | .[] | .tag)' ./release-versions/$LATEST_FILE_NAME)
+        TAG=$(jq -r '(.include[:1] | .[] | .tag)' ./release-versions/$LATEST_FILE_NAME)
         echo ::set-output name=backendTag::${TAG}
         
     - name: Generate stack json
@@ -56,8 +56,8 @@ jobs:
     needs: generate-info
     runs-on: ubuntu-latest
     env: 
-      REPOSITORY: ${{(needs.generate-info.outputs.backendRepository)}}
-      TAG: ${{(needs.generate-info.outputs.backendTag)}}
+      REPOSITORY: ${{needs.generate-info.outputs.backendRepository}}
+      TAG: ${{needs.generate-info.outputs.backendTag}}
     steps:
     - name: test matrix
       id: test-matrix
@@ -76,7 +76,7 @@ jobs:
       uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: $REPOSITORY
+        repository: ${{ env.REPOSITORY }}
         event-type: staging-deployment
         client-payload: ${{steps.set-json.outputs.json}}
 
