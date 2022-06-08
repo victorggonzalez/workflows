@@ -32,6 +32,7 @@ jobs:
         LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
       run: |
         echo $LATEST_FILE
+        jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME
 
     - name: Generate stack json
       id: stack-json
