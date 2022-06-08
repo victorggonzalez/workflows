@@ -107,7 +107,7 @@ jobs:
     steps:
     - run: echo "$STACK"
       env:
-        MATRIX: ${{ needs.generate-info.outputs.stack }}
+        STACK: ${{ needs.generate-info.outputs.stack }}
     - name: Generate
       id: params
       shell: python
@@ -117,8 +117,8 @@ jobs:
         print("Python jobs:")
         print(versions)
 
-  dispatch-stack:
-    name: Dispatch Continuous Delivery workflow in stack
+  dispatch-versions:
+    name: Dispatch versions
     # needs: dispatch-backend
     needs: Parameters
     runs-on: ubuntu-latest
@@ -135,6 +135,16 @@ jobs:
     - run: echo ${{matrix.repo}}
 
     - run: echo ${{matrix.tag}}
+
+  dispatch-stack:
+    name: Dispatch versions
+    # needs: dispatch-backend
+    needs: generate-info
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "$STACK"
+      env:
+        STACK: ${{ needs.generate-info.outputs.stack }}
 
     # - name: Set json output
     #   id: set-json
