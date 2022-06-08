@@ -42,10 +42,7 @@ jobs:
         LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
         STACK=$(jq '(.include[1:])' ./release-versions/$LATEST_FILE_NAME)
-        STACK=${STACK//'%'/'%25'}
-        STACK=${STACK//$'\n'/'%0A'}
-        STACK=${STACK//$'\r'/'%0D'}
-        echo ::set-output name=stack::${STACK}
+        echo ::set-output name=stack::${STACK//$'\n'/'%0A'}
     
     - name: echo
       id: echo
