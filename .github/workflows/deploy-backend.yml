@@ -90,8 +90,6 @@ jobs:
     # needs: dispatch-backend
     needs: generate-info
     runs-on: ubuntu-latest
-    env: 
-      STACK: ${{fromJson(needs.generate-info.outputs.stack)}}
     # strategy:
     #   matrix:
     #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
