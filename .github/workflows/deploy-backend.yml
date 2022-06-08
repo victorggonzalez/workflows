@@ -91,39 +91,39 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       STACK: ${{(needs.generate-info.outputs.stack)}}
-    strategy:
-      matrix:
-        include: ${{fromJson(needs.generate-info.outputs.stack)}}
+    # strategy:
+    #   matrix:
+    #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
     steps:
     - name: test matrix
       id: test-matrix
       run: |
         echo $STACK
-    - run: echo ${{matrix.repo}}
+    # - run: echo ${{matrix.repo}}
 
-    - run: echo ${{matrix.tag}}
+    # - run: echo ${{matrix.tag}}
 
-    - name: Set json output
-      id: set-json
-      env:
-        TAG: ${{matrix.tag}}
-      run: |
-        JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
-        echo ::set-output name=json::${JSON//'%'/'%25'}
+    # - name: Set json output
+    #   id: set-json
+    #   env:
+    #     TAG: ${{matrix.tag}}
+    #   run: |
+    #     JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
+    #     echo ::set-output name=json::${JSON//'%'/'%25'}
 
-    - name: Repository Dispatch
-      uses: peter-evans/repository-dispatch@v2
-      with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: ${{ matrix.repo }}
-        event-type: staging-deployment
-        client-payload: ${{steps.set-json.outputs.json}}
-
-    # # Dispatch status check
-    # - name: Dispatch Api status check
+    # - name: Repository Dispatch
     #   uses: peter-evans/repository-dispatch@v2
     #   with:
     #     token: ${{ secrets.REPO_ACCESS_TOKEN }}
-    #     repository: victorggonzalez/workflows
-    #     event-type: check-status
-    #     client-payload: '{"tag": "${{ env.TAG }}", "file": "${{ env.LATEST_FILE_NAME }}", "attemptNumber": 1}'
+    #     repository: ${{ matrix.repo }}
+    #     event-type: staging-deployment
+    #     client-payload: ${{steps.set-json.outputs.json}}
+
+    # # # Dispatch status check
+    # # - name: Dispatch Api status check
+    # #   uses: peter-evans/repository-dispatch@v2
+    # #   with:
+    # #     token: ${{ secrets.REPO_ACCESS_TOKEN }}
+    # #     repository: victorggonzalez/workflows
+    # #     event-type: check-status
+    # #     client-payload: '{"tag": "${{ env.TAG }}", "file": "${{ env.LATEST_FILE_NAME }}", "attemptNumber": 1}'
