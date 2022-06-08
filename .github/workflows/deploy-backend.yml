@@ -11,10 +11,10 @@ jobs:
     outputs:
       fileName: ${{ steps.latest-file.outputs.latest }}
       backendRepository: ${{ steps.backend.outputs.repository }}
-      backendTag: ${{ steps.backend.outputs.tag }}
+      backendTag: ${{ steps.backend2.outputs.tag }}
       stack: ${{ steps.stack-json.outputs.stack }}
-    environment: 
-      name: staging
+    # environment: 
+    #   name: staging
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -33,6 +33,12 @@ jobs:
       run: |
         REPOSITORY=$(jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME)
         echo ::set-output name=backendRepository::$REPOSITORY
+
+    - name: Generate backend info 2
+      id: backend2
+      env:
+        LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
+      run: |
         TAG=$(jq '(.include[:1] | .[] | .tag)' ./release-versions/$LATEST_FILE_NAME)
         echo ::set-output name=backendTag::$TAG
 
