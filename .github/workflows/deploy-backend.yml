@@ -86,7 +86,7 @@ jobs:
   #       sleep 25
 
   Parameters:
-    name: Dispatch Continuous Delivery workflow in stack
+    name: generate params
     # needs: dispatch-backend
     needs: generate-info
     runs-on: ubuntu-latest
@@ -102,7 +102,7 @@ jobs:
       id: params
       shell: python
       run: |
-        versions='[{'repo': 'victorggonzalez/demo-app', 'tag': 'v0.1.1'}]'
+        versions='[{"repo": "victorggonzalez/demo-app", "tag": "v0.1.1"}]'
         echo versions
         print(f'::set-output name=versions::{versions!s}')
         print("Python jobs:")
@@ -119,8 +119,8 @@ jobs:
     #   matrix:
     #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
     steps:
-    - name: test matrix
-      id: test-matrix
+    - name: test stack
+      id: test-stack
       run: |
         echo $STACK
     # - run: echo ${{matrix.repo}}
