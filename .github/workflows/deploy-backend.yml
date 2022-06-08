@@ -29,9 +29,9 @@ jobs:
     - name: Generate backend info
       id: backend
       env:
-        LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
+        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
-        echo $LATEST_FILE
+        echo $LATEST_FILE_NAME
         jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME
 
     - name: Generate stack json
