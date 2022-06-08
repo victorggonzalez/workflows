@@ -93,7 +93,7 @@ jobs:
       STACK: ${{(needs.generate-info.outputs.stack)}}
     strategy:
       matrix:
-        include: ${{(needs.generate-info.outputs.stack)}}
+        include: ${{fromJson(needs.generate-info.outputs.stack)}}
     steps:
     - name: test matrix
       id: test-matrix
