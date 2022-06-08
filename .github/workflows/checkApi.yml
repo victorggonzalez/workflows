@@ -47,8 +47,8 @@ jobs:
     - name: True step
       id: trueWorkStep
       uses: peter-evans/repository-dispatch@v2
-      if:  ${{ steps.get-status.outputs.status == '2' }} 
-      # if:  ${{ steps.get-status.outputs.status == env.TAG }} 
+      # if:  ${{ steps.get-status.outputs.status == '2' }} 
+      if:  ${{ steps.get-status.outputs.status == env.TAG }} 
       continue-on-error: true
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
@@ -59,8 +59,8 @@ jobs:
     ## Do your job here
     - name: False step
       id: falseWorkStep
-      if:  ${{ steps.get-status.outputs.status != '2' }} 
-      # if:  ${{ steps.get-status.outputs.status != env.TAG }} 
+      # if:  ${{ steps.get-status.outputs.status != '2' }} 
+      if:  ${{ steps.get-status.outputs.status != env.TAG }} 
       continue-on-error: true
       run: |
         sleep 30

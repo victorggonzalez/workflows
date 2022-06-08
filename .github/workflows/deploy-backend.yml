@@ -69,12 +69,30 @@ jobs:
         repository: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
         event-type: staging-deployment
         client-payload: ${{steps.set-json.outputs.json}}
-    
-    # Dispatch status check
-    - name: Dispatch Api status check
-      uses: peter-evans/repository-dispatch@v2
+
+    - uses: convictional/trigger-workflow-and-wait@v1.6.1
       with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: victorggonzalez/workflows
-        event-type: check-status
-        client-payload: '{"tag": "${{ env.TAG }}", "file": "${{ env.LATEST_FILE_NAME }}", "attemptNumber": 1}'
+        owner: victorggonzalez
+        repo: workflows
+        github_token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        github_user: victorggonzalez
+        workflow_file_name: checkApi.yml
+        wait_interval: 45
+        client_payload: ${{steps.set-json.outputs.json}}
+        propagate_failure: false
+        trigger_workflow: true
+        wait_workflow: true
+
+    - name: Pause for 25 seconds
+      run: |
+        echo "success waiting"
+        sleep 25
+
+    # # Dispatch status check
+    # - name: Dispatch Api status check
+    #   uses: peter-evans/repository-dispatch@v2
+    #   with:
+    #     token: ${{ secrets.REPO_ACCESS_TOKEN }}
+    #     repository: victorggonzalez/workflows
+    #     event-type: check-status
+    #     client-payload: '{"tag": "${{ env.TAG }}", "file": "${{ env.LATEST_FILE_NAME }}", "attemptNumber": 1}'
