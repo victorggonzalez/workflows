@@ -103,7 +103,6 @@ jobs:
       shell: python
       run: |
         versions='[{"repo": "victorggonzalez/demo-app", "tag": "v0.1.1"}]'
-        echo $versions
         print(f'::set-output name=versions::{versions!s}')
         print("Python jobs:")
         print(versions)
