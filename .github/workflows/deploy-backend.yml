@@ -43,7 +43,6 @@ jobs:
       run: |
         STACK=$(jq '(.include[1:])' ./release-versions/$LATEST_FILE_NAME)
         echo ::set-output name=stack::${STACK//'%'/'%25'}
-        print(stack)
     
     - name: echo
       id: echo
