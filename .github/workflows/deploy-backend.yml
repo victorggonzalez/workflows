@@ -5,12 +5,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate-matrix:
-    name: Generate matrix
+  generate-info:
+    name: Generate info
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
       fileName: ${{ steps.latest-file.outputs.latest }}
+      backendRepository: ${{ steps.backend.outputs.repository }}
+      backendTag: ${{ steps.backend.outputs.tag }}
+      stack: ${{ steps.stack-json.outputs.stack }}
     environment: 
       name: staging
     steps:
@@ -24,39 +26,42 @@ jobs:
         LATEST_FILE_NAME=$(ls -Ar | head -n 1)
         echo ::set-output name=latest::${LATEST_FILE_NAME}
 
-    - name: Generate matrix
-      id: set-matrix
+    - name: Generate backend info
+      id: backend
       env:
-        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
+        LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
       run: |
-        cd ./release-versions
-        LATEST_FILE=$(cat $LATEST_FILE_NAME)
-        echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
+        REPOSITORY=$(jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME)
+        TAG=$(jq '(.include[:1] | .[] | .tag)' ./release-versions/$LATEST_FILE_NAME)
+        echo ::set-output name=backendRepository::$REPOSITORY
+        echo ::set-output name=backendTag::$TAG
 
-    - run: echo "$MATRIX"
+    - name: Generate stack json
+      id: stack-json
       env:
-        MATRIX: ${{tojson( steps.set-matrix.outputs.matrix)}}
+        LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
+      run: |
+        STACK=jq '(.include[1:] | .[])' ./release-versions/$LATEST_FILE_NAME
+        echo ::set-output name=stack::${STACK//'%'/'%25'}
 
   dispatch-backend:
     name: Dispatch Continuous Delivery workflow in backend
-    needs: generate-matrix
+    needs: generate-info
     runs-on: ubuntu-latest
     env: 
-      REPO: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
-      TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
-      LATEST_FILE_NAME: ${{needs.generate-matrix.outputs.fileName}}
+      REPOSITORY: ${{(needs.generate-info.outputs.backendRepository)}}
+      TAG: ${{fromJson(needs.generate-info.outputs.backendTag)}}
+      LATEST_FILE_NAME: ${{needs.generate-info.outputs.fileName}}
     steps:
     - name: test matrix
       id: test-matrix
       run: |
-        echo $REPO
+        echo $REPOSITORY
         echo $TAG
         echo $LATEST_FILE_NAME
 
     - name: Set json output
       id: set-json
-      env:
-        TAG: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].tag}}
       run: |
         JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
         echo ::set-output name=json::${JSON//'%'/'%25'}
@@ -66,27 +71,50 @@ jobs:
       uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: ${{fromJson(needs.generate-matrix.outputs.matrix).include[0].repo}}
+        repository: $REPO
         event-type: staging-deployment
         client-payload: ${{steps.set-json.outputs.json}}
-
-    - uses: convictional/trigger-workflow-and-wait@v1.6.1
-      with:
-        owner: victorggonzalez
-        repo: workflows
-        github_token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        github_user: victorggonzalez
-        workflow_file_name: checkApi.yml
-        wait_interval: 45
-        client_payload: ${{steps.set-json.outputs.json}}
-        propagate_failure: false
-        trigger_workflow: true
-        wait_workflow: true
 
     - name: Pause for 25 seconds
       run: |
         echo "success waiting"
         sleep 25
+
+  dispatch-stack:
+    name: Dispatch Continuous Delivery workflow in stack
+    needs: dispatch-backend
+    runs-on: ubuntu-latest
+    env: 
+      STACK: ${{(needs.generate-info.outputs.stack)}}
+      LATEST_FILE_NAME: ${{needs.generate-info.outputs.fileName}}
+    strategy:
+      matrix:
+        include: ${{(needs.generate-info.outputs.stack)}}
+    steps:
+    - name: test matrix
+      id: test-matrix
+      run: |
+        echo $STACK
+        echo $LATEST_FILE_NAME
+    - run: echo ${{matrix.repo}}
+
+    - run: echo ${{matrix.tag}}
+
+    - name: Set json output
+      id: set-json
+      env:
+        TAG: ${{matrix.tag}}
+      run: |
+        JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
+        echo ::set-output name=json::${JSON//'%'/'%25'}
+
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        repository: ${{ matrix.repo }}
+        event-type: staging-deployment
+        client-payload: ${{steps.set-json.outputs.json}}
 
     # # Dispatch status check
     # - name: Dispatch Api status check
