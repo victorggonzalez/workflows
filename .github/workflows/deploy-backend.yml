@@ -49,8 +49,7 @@ jobs:
       run: |
         echo ${{ steps.backend.outputs.backendRepository }}
         echo ${{ steps.backend.outputs.backendTag }}
-        echo ${{ steps.backend.outputs.backendTag }}
-        echo ${{ steps.stack-json.outputs.backendTag }}
+        echo ${{ steps.stack-json.outputs.stack }}
 
   dispatch-backend:
     name: Dispatch Continuous Delivery workflow in backend
@@ -59,14 +58,12 @@ jobs:
     env: 
       REPOSITORY: ${{(needs.generate-info.outputs.backendRepository)}}
       TAG: ${{(needs.generate-info.outputs.backendTag)}}
-      LATEST_FILE_NAME: ${{needs.generate-info.outputs.fileName}}
     steps:
     - name: test matrix
       id: test-matrix
       run: |
         echo $REPOSITORY
         echo $TAG
-        echo $LATEST_FILE_NAME
 
     - name: Set json output
       id: set-json
@@ -79,7 +76,7 @@ jobs:
       uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: $REPO
+        repository: $REPOSITORY
         event-type: staging-deployment
         client-payload: ${{steps.set-json.outputs.json}}
 
