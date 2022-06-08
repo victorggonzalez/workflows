@@ -51,43 +51,44 @@ jobs:
         echo ${{ steps.backend.outputs.backendTag }}
         echo ${{ steps.stack-json.outputs.stack }}
 
-  dispatch-backend:
-    name: Dispatch Continuous Delivery workflow in backend
-    needs: generate-info
-    runs-on: ubuntu-latest
-    env: 
-      REPOSITORY: ${{needs.generate-info.outputs.backendRepository}}
-      TAG: ${{needs.generate-info.outputs.backendTag}}
-    steps:
-    - name: test matrix
-      id: test-matrix
-      run: |
-        echo $REPOSITORY
-        echo $TAG
+  # dispatch-backend:
+  #   name: Dispatch Continuous Delivery workflow in backend
+  #   needs: generate-info
+  #   runs-on: ubuntu-latest
+  #   env: 
+  #     REPOSITORY: ${{needs.generate-info.outputs.backendRepository}}
+  #     TAG: ${{needs.generate-info.outputs.backendTag}}
+  #   steps:
+  #   - name: test matrix
+  #     id: test-matrix
+  #     run: |
+  #       echo $REPOSITORY
+  #       echo $TAG
 
-    - name: Set json output
-      id: set-json
-      run: |
-        JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
-        echo ::set-output name=json::${JSON//'%'/'%25'}
+  #   - name: Set json output
+  #     id: set-json
+  #     run: |
+  #       JSON=$(jq --null-input --arg tag "$TAG" '{"tag": $tag}')
+  #       echo ::set-output name=json::${JSON//'%'/'%25'}
 
-    # Dispatch deployment
-    - name: Repository Dispatch
-      uses: peter-evans/repository-dispatch@v2
-      with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: ${{ env.REPOSITORY }}
-        event-type: staging-deployment
-        client-payload: ${{steps.set-json.outputs.json}}
+  #   # Dispatch deployment
+  #   - name: Repository Dispatch
+  #     uses: peter-evans/repository-dispatch@v2
+  #     with:
+  #       token: ${{ secrets.REPO_ACCESS_TOKEN }}
+  #       repository: ${{ env.REPOSITORY }}
+  #       event-type: staging-deployment
+  #       client-payload: ${{steps.set-json.outputs.json}}
 
-    - name: Pause for 25 seconds
-      run: |
-        echo "success waiting"
-        sleep 25
+  #   - name: Pause for 25 seconds
+  #     run: |
+  #       echo "success waiting"
+  #       sleep 25
 
   dispatch-stack:
     name: Dispatch Continuous Delivery workflow in stack
-    needs: dispatch-backend
+    # needs: dispatch-backend
+    needs: generate-info
     runs-on: ubuntu-latest
     env: 
       STACK: ${{(needs.generate-info.outputs.stack)}}
