@@ -137,14 +137,20 @@ jobs:
     - run: echo ${{matrix.tag}}
 
   dispatch-stack:
-    name: Dispatch versions
+    name: Dispatch stack
     # needs: dispatch-backend
     needs: generate-info
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ needs.generate-info.outputs.stack }}
     steps:
     - run: echo "$STACK"
       env:
         STACK: ${{ needs.generate-info.outputs.stack }}
+    - run: echo ${{matrix.repo}}
+
+    - run: echo ${{matrix.tag}}
 
     # - name: Set json output
     #   id: set-json
