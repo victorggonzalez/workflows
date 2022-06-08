@@ -31,13 +31,15 @@ jobs:
       env:
         LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
-        echo $LATEST_FILE_NAME
-        jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME
-
+        REPOSITORY=$(jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME)
+        echo ::set-output name=backendRepository::${REPOSITORY}
+        TAG=$(jq '(.include[:1] | .[] | .tag)' ./release-versions/$LATEST_FILE_NAME)
+        echo ::set-output name=backendTag::${TAG}
+        
     - name: Generate stack json
       id: stack-json
       env:
-        LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
+        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: |
         STACK=jq '(.include[1:] | .[])' ./release-versions/$LATEST_FILE_NAME
         echo ::set-output name=stack::${STACK//'%'/'%25'}
