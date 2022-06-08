@@ -32,15 +32,9 @@ jobs:
         LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
       run: |
         REPOSITORY=$(jq '(.include[:1] | .[] | .repo)' ./release-versions/$LATEST_FILE_NAME)
-        echo ::set-output name=backendRepository::$REPOSITORY
-
-    - name: Generate backend info 2
-      id: backend2
-      env:
-        LATEST_FILE: ${{ steps.latest-file.outputs.latest }}
-      run: |
+        echo ::set-output name=backendRepository::${REPOSITORY}
         TAG=$(jq '(.include[:1] | .[] | .tag)' ./release-versions/$LATEST_FILE_NAME)
-        echo ::set-output name=backendTag::$TAG
+        echo ::set-output name=backendTag::${TAG}
 
     - name: Generate stack json
       id: stack-json
