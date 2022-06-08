@@ -29,7 +29,7 @@ jobs:
         FILE_NAME=$(echo "`date +"%Y%m%d%H%M"`"-stagingVersions.json)
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         jq --arg tag "$TAG" --arg repository "$REPOSITORY" \
-        '(.include[] | select(.repository == $repository) | .tag) |= $tag' ./release-versions/$LATEST_FILE_NAME > ./release-versions/$FILE_NAME
+        '(.include[] | select(.repo == $repository) | .tag) |= $tag' ./release-versions/$LATEST_FILE_NAME > ./release-versions/$FILE_NAME
 
     - name: Commit step
       id: commit
