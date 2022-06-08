@@ -85,10 +85,35 @@ jobs:
   #       echo "success waiting"
   #       sleep 25
 
-  dispatch-stack:
+  Parameters:
     name: Dispatch Continuous Delivery workflow in stack
     # needs: dispatch-backend
     needs: generate-info
+    runs-on: ubuntu-latest
+    env: 
+      STACK: ${{(needs.generate-info.outputs.stack)}}
+    # strategy:
+    #   matrix:
+    #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
+    steps:
+    - name: test matrix
+      id: test-matrix
+      run: |
+        echo $STACK
+    - name: Generate
+      id: params
+      shell: python
+      run: |
+        versions='[{'repo': 'victorggonzalez/demo-app', 'tag': 'v0.1.1'}]'
+        echo versions
+        print(f'::set-output name=versions::{versions!s}')
+        print("Python jobs:")
+        print(versions)
+
+  dispatch-stack:
+    name: Dispatch Continuous Delivery workflow in stack
+    # needs: dispatch-backend
+    needs: Parameters
     runs-on: ubuntu-latest
     env: 
       STACK: ${{fromJson(needs.generate-info.outputs.stack)}}
