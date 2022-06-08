@@ -90,6 +90,8 @@ jobs:
     # needs: dispatch-backend
     needs: generate-info
     runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.params.outputs.versions }}
     # strategy:
     #   matrix:
     #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
@@ -112,19 +114,19 @@ jobs:
     # needs: dispatch-backend
     needs: Parameters
     runs-on: ubuntu-latest
-    env: 
-      STACK: ${{fromJson(needs.generate-info.outputs.stack)}}
-    # strategy:
-    #   matrix:
-    #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
+    # env: 
+    #   STACK: ${{fromJson(needs.generate-info.outputs.stack)}}
+    strategy:
+      matrix:
+        include: ${{fromJson(needs.Parameters.outputs.versions)}}
     steps:
     - name: test stack
       id: test-stack
       run: |
         echo $STACK
-    # - run: echo ${{matrix.repo}}
+    - run: echo ${{matrix.repo}}
 
-    # - run: echo ${{matrix.tag}}
+    - run: echo ${{matrix.tag}}
 
     # - name: Set json output
     #   id: set-json
