@@ -40,13 +40,9 @@ jobs:
       id: stack-json
       env:
         LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
-      # run: |
-      #   stack=$(jq '(.include[1:])' ./release-versions/$LATEST_FILE_NAME)
-      #   echo ::set-output name=stack::${stack//'%'/'%25'}
-      #   print(stack)
       run: |
         stack=$(jq '(.include[1:])' ./release-versions/$LATEST_FILE_NAME)
-        print(f'::set-output name=stack::{stack!s}')
+        echo ::set-output name=stack::${stack//'%'/'%25'}
         print(stack)
     
     - name: echo
@@ -55,6 +51,15 @@ jobs:
         echo ${{ steps.backend.outputs.backendRepository }}
         echo ${{ steps.backend.outputs.backendTag }}
         echo ${{ steps.stack-json.outputs.stack }}
+
+    - name: Generate
+      id: params
+      shell: python
+      run: |
+        versions='[{"repo": "victorggonzalez/demo-app", "tag": "v0.1.1"}]'
+        print(f'::set-output name=versions::{versions!s}')
+        print("Python jobs:")
+        print(versions)
 
   # dispatch-backend:
   #   name: Dispatch Continuous Delivery workflow in backend
@@ -101,10 +106,9 @@ jobs:
     #   matrix:
     #     include: ${{fromJson(needs.generate-info.outputs.stack)}}
     steps:
-    - name: test matrix
-      id: test-matrix
-      run: |
-        echo $STACK
+    - run: echo "$STACK"
+      env:
+        MATRIX: ${{ needs.generate-info.outputs.stack }}
     - name: Generate
       id: params
       shell: python
@@ -114,8 +118,8 @@ jobs:
         print("Python jobs:")
         print(versions)
 
-  dispatch-versions:
-    name: Dispatch in versions
+  dispatch-stack:
+    name: Dispatch Continuous Delivery workflow in stack
     # needs: dispatch-backend
     needs: Parameters
     runs-on: ubuntu-latest
