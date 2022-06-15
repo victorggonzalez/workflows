@@ -18,19 +18,19 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Get latest versions file
-      id: latest-file
+      id: latest-staging-file
       run: |
         cd ./staging-versions
-        LATEST_FILE_NAME=$(ls -Ar | head -n 1)
-        echo ::set-output name=latest::${LATEST_FILE_NAME}
+        LATEST_FILE_NAME_STAGING=$(ls -Ar | head -n 1)
+        echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
 
     - name: Generate matrix
       id: set-matrix
       env:
-        LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
+        LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       run: |
         cd ./staging-versions
-        LATEST_FILE=$(cat $LATEST_FILE_NAME)
+        LATEST_FILE=$(cat $LATEST_FILE_NAME_STAGING)
         echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
 
     - name: echo
@@ -90,20 +90,30 @@ jobs:
     # environment: 
     #   name: staging
     env:
-      LATEST_FILE_NAME: ${{ needs.generate-matrix.outputs.latest }}
+      LATEST_FILE_NAME_STAGING: ${{ needs.generate-matrix.outputs.latest }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - run: |
-        echo $LATEST_FILE_NAME
+    # Create new staging-versions.json file. Use jq to write to stdout and pipe the output to a newly created file.
+    - name: Create new release-versions.json file name
+      run: | 
+        RELEASE_FILE_NAME=$(echo "`date +"%Y%m%d%H%M"`"-release-versions.json)
+        echo "RELEASE_FILE_NAME=$RELEASE_FILE_NAME" >> $GITHUB_ENV
+
+    - name: Update latest release versions file
+      id: update-latest-release-file
+      env:
+        RELEASE_FILE_NAME: ${{ env.RELEASE_FILE_NAME }}
+      run: |
+        echo $LATEST_STAGING_FILE_NAME
         cd ./staging-versions
-        cp $LATEST_FILE_NAME ../release-versions/$LATEST_FILE_NAME 
-        cp $LATEST_FILE_NAME ../deployed/current-release-versions.json
+        cp $LATEST_FILE_NAME_STAGING ../release-versions/$RELEASE_FILE_NAME 
+        cp $LATEST_FILE_NAME_STAGING ../deployed/current-staging-versions.json
 
     - name: Commit step
       id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: ${{ env.LATEST_FILE_NAME }}
-        # commit_message: Deploy new stack to staging environment
+        # commit_message: ${{ env.RELEASE_FILE_NAME }}
+        commit_message: Deploy new stack to staging environment
