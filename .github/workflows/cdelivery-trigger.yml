@@ -93,6 +93,7 @@ jobs:
       uses: actions/checkout@v2
 
     - run: |
+        echo $LATEST_FILE_NAME
         cd ./staging-versions
         cp $LATEST_FILE_NAME ../release-versions/$LATEST_FILE_NAME 
         cp $LATEST_FILE_NAME ../deployed/current-release-versions.json
