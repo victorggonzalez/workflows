@@ -16,20 +16,20 @@ jobs:
     - name: Get latest versions file
       id: latest-file
       run: |
-        cd ./release-versions
+        cd ./staging-versions
         LATEST_FILE_NAME=$(ls -Ar | head -n 1)
         echo ::set-output name=latest::${LATEST_FILE_NAME}
 
-    - name: Create new stagingVersions.json file
+    - name: Create new staging-versions.json file
       env:
         REPOSITORY: ${{ github.event.client_payload.repo }}
         TAG: ${{ github.event.client_payload.tag }}
         LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: | 
-        FILE_NAME=$(echo "`date +"%Y%m%d%H%M"`"-stagingVersions.json)
+        FILE_NAME=$(echo "`date +"%Y%m%d%H%M"`"-staging-versions.json)
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         jq --arg tag "$TAG" --arg repository "$REPOSITORY" \
-        '(.include[] | select(.repo == $repository) | .tag) |= $tag' ./release-versions/$LATEST_FILE_NAME > ./release-versions/$FILE_NAME
+        '(.include[] | select(.repository == $repository) | .tag) |= $tag' ./staging-versions/$LATEST_FILE_NAME > ./staging-versions/$FILE_NAME
 
     - name: Commit step
       id: commit
