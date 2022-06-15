@@ -90,5 +90,5 @@ jobs:
       name: staging
     steps:
     - run: |
-      cp staging-versions/$LATEST_FILE_NAME release-versions/$LATEST_FILE_NAME 
-      cp staging-versions/$LATEST_FILE_NAME deployed/current-release-versions.json
+        cp staging-versions/$LATEST_FILE_NAME release-versions/$LATEST_FILE_NAME 
+        cp staging-versions/$LATEST_FILE_NAME deployed/current-release-versions.json
