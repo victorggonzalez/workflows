@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      latest: ${{ steps.latest-file.outputs.latest }}
+      latest: ${{ steps.latest-staging-file.outputs.latest }}
     # environment: 
     #   name: staging
     steps:
