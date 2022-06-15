@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-    environment: 
-      name: staging
+    # environment: 
+    #   name: staging
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -74,8 +74,8 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # The environment that the job will reference
-    environment: 
-      name: staging
+    # environment: 
+    #   name: staging
     steps:
     # This step runs a single command to execute integation testing
     - name: Test
@@ -86,12 +86,16 @@ jobs:
     name: Promote stack to production ready
     needs: test
     runs-on: ubuntu-latest
-    environment: 
-      name: staging
+    # environment: 
+    #   name: staging
     steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
     - run: |
-        cp ./staging-versions/$LATEST_FILE_NAME ./release-versions/$LATEST_FILE_NAME 
-        cp ./staging-versions/$LATEST_FILE_NAME ./deployed/current-release-versions.json
+        cp staging-versions/$LATEST_FILE_NAME release-versions/$LATEST_FILE_NAME 
+        cp staging-versions/$LATEST_FILE_NAME deployed/current-release-versions.json
+
     - name: Commit step
       id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
