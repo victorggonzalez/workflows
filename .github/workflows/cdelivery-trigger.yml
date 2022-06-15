@@ -42,6 +42,8 @@ jobs:
     name: Dispatch Continuous Delivery workflows
     needs: generate-matrix
     runs-on: ubuntu-latest
+    environment: 
+      name: staging
     strategy:
       matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     steps:

@@ -67,7 +67,7 @@ jobs:
 
   promote:
     name: Promote stack to production ready
-    needs: dispatch
+    needs: [generate-matrix, dispatch]
     runs-on: ubuntu-latest
     env:
       LATEST_FILE_NAME_RELEASE: ${{ needs.generate-matrix.outputs.latest }}
