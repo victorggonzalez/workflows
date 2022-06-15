@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      latest: ${{ steps.latest-file.outputs.latest }}
     # environment: 
     #   name: staging
     steps:
@@ -88,6 +89,8 @@ jobs:
     runs-on: ubuntu-latest
     # environment: 
     #   name: staging
+    env:
+      LATEST_FILE_NAME: ${{ needs.generate-matrix.outputs.latest }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2
