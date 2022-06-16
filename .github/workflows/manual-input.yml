@@ -36,7 +36,6 @@ jobs:
 
     - name: Get latest staging versions file
       id: latest-staging-file
-      if: "${{ env.STACK == '' }}"
       run: |
         if [[ "${{ inputs.stack }}" == "" ]]; then
           cd ./staging-versions
