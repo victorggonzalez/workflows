@@ -30,7 +30,23 @@ jobs:
     steps:
     # Runs a single command using the runners shell
     - if: "${{ env.STACK == '' }}"
-      run: echo "This command is executed if STACK input IS NOT empty"
-    - name: Send greeting
+      run: echo "This command is executed if STACK input IS empty"
+
+    - name: Get latest staging versions file
+      id: latest-staging-file
+      if: "${{ env.STACK == '' }}"
+      run: |
+        cd ./staging-versions
+        LATEST_FILE_NAME_STAGING=$(ls -Ar | head -n 1)
+        echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
+
+    - name: Specify latest staging versions file
+      id: latest-staging-file
       if: "${{ env.STACK != '' }}"
-      run: echo "Hello ${{ github.event.inputs.name }}"
+      run: |
+        cd ./staging-versions
+        LATEST_FILE_NAME_STAGING=${{ env.STACK }}
+        echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
+
+    - name: Send greeting
+      run: echo $LATEST_FILE_NAME_STAGING
