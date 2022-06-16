@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
 
-name: 020-manual-input-workflow
+name: manualtest
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -57,6 +57,8 @@ jobs:
         python-version: 3.8 #install the python needed
 
     - name: execute py script # run the run.py to get the latest data
+      env:
+        LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       run: |
         python compare.py staging-versions/$LATEST_FILE_NAME_STAGING deployed/current-staging-versions
 
