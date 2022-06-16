@@ -30,7 +30,7 @@ jobs:
     steps:
     - name: Deploying a specific staging stack
       if: "${{ env.STACK != '' }}"
-      run: echo "This command is executed if STACK input IS NOT empty"
+      run: echo ${{ env.STACK }}
 
     - name: Check out code
       uses: actions/checkout@v2
