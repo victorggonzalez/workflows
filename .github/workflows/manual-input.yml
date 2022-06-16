@@ -58,7 +58,7 @@ jobs:
 
     - name: execute py script # run the run.py to get the latest data
       run: |
-        python compare.py ./staging-versions/$LATEST_FILE_NAME_STAGING ./deployed/current-staging-versions
+        python compare.py staging-versions/$LATEST_FILE_NAME_STAGING deployed/current-staging-versions
 
     - name: Generate matrix
       id: set-matrix
