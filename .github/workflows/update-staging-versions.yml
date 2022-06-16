@@ -35,4 +35,4 @@ jobs:
       id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: ${{ env.LATEST_FILE_NAME }}
+        commit_message: ${{ env.FILE_NAME }}
