@@ -8,16 +8,16 @@ on:
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
+      stack:
+        # Friendly description to be shown in the UI instead of 'stack'
+        description: 'Specify a stack to deploy to staging'
         # Default value if no value is explicitly provided
         default: ''
         # Input has to be provided for the workflow to run
         required: false
 
 env:        
-  STACK: ${{ inputs.name }}
+  STACK: ${{ inputs.stack }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -38,23 +38,21 @@ jobs:
       id: latest-staging-file
       if: "${{ env.STACK == '' }}"
       run: |
-        cd ./staging-versions
-        LATEST_FILE_NAME_STAGING=$(ls -Ar | head -n 1)
-        echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
-
-    - name: Specify latest staging versions file
-      id: set-latest-staging-file
-      if: "${{ env.STACK != '' }}"
-      run: |
-        cd ./staging-versions
-        LATEST_FILE_NAME_STAGING=${{ env.STACK }}
-        echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
+        if [[ "${{ inputs.stack }}" == "" ]]; then
+          cd ./staging-versions
+          LATEST_FILE_NAME_STAGING=$(ls -Ar | head -n 1)
+          echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
+        fi
+        if [[ "${{ inputs.stack }}" != "" ]]; then
+          LATEST_FILE_NAME_STAGING=${{ env.STACK }}
+          echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
+        fi
 
     - name: echo
       id: echo
       env:
         LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       run: |
-        echo ${{ steps.get-latest-staging-file.outputs.latest }}
+        echo ${{ steps.latest-staging-file.outputs.latest }}
         echo ${{ steps.set-latest-staging-file.outputs.latest }}
         echo $LATEST_FILE_NAME_STAGING
