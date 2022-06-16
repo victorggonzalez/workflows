@@ -65,7 +65,6 @@ jobs:
     - name: Generate matrix
       id: set-matrix
       run: |
-        cd ./staging-versions
         LATEST_FILE=$(cat diff-staging.json)
         echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
 
