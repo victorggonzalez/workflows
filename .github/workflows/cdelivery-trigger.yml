@@ -94,7 +94,7 @@ jobs:
       uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        repository: ${{ matrix.repo }}
+        repository: ${{ matrix.repository }}
         event-type: staging-deployment
         client-payload: ${{steps.set-json.outputs.json}}
 
