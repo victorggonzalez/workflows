@@ -16,14 +16,12 @@ for current_item in current_file['include']:
         else:
             if new_item['tag'] != current_item['tag']:
                 print(f"Found difference: {new_item['repository']}")
-                print(new_item['tag'])
+                print('Old tag')
                 print(current_item['tag'])
-                print('new_item')
-                print(new_item)
+                print('New tag')
+                print(new_item['tag'])
                 output['include'].append(new_item)
-                print(output)
 
-print(f"New output: {output}")
 #new file
 output_file = open("diff-staging.json", "w")
 json.dump(output, output_file, indent=2)
