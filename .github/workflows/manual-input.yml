@@ -60,7 +60,7 @@ jobs:
       env:
         LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       run: |
-        python compare.py staging-versions/$LATEST_FILE_NAME_STAGING deployed/current-staging-versions
+        python compare.py staging-versions/$LATEST_FILE_NAME_STAGING deployed/current-staging-versions.json
 
     - name: Generate matrix
       id: set-matrix
