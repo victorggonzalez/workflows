@@ -115,7 +115,7 @@ jobs:
 
   promote:
     name: Promote stack to release ready
-    needs: [generate-matrix, test]
+    needs: [generate-matrix, dispatch, test]
     runs-on: ubuntu-latest
     environment: 
       name: staging
