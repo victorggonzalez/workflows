@@ -28,11 +28,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Deploying a specific staging stack
+      if: "${{ env.STACK != '' }}"
+      run: echo "This command is executed if STACK input IS NOT empty"
+
     - name: Check out code
       uses: actions/checkout@v2
-
-    - if: "${{ env.STACK == '' }}"
-      run: echo "This command is executed if STACK input IS empty"
 
     - name: Get latest staging versions file
       id: latest-staging-file
@@ -53,5 +54,4 @@ jobs:
         LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       run: |
         echo ${{ steps.latest-staging-file.outputs.latest }}
-        echo ${{ steps.set-latest-staging-file.outputs.latest }}
         echo $LATEST_FILE_NAME_STAGING
