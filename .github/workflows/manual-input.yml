@@ -33,7 +33,7 @@ jobs:
       run: echo "This command is executed if STACK input IS empty"
 
     - name: Get latest staging versions file
-      id: latest-staging-file
+      id: get-latest-staging-file
       if: "${{ env.STACK == '' }}"
       run: |
         cd ./staging-versions
@@ -41,7 +41,7 @@ jobs:
         echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
 
     - name: Specify latest staging versions file
-      id: latest-staging-file
+      id: set-latest-staging-file
       if: "${{ env.STACK != '' }}"
       run: |
         cd ./staging-versions
