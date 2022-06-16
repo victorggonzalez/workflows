@@ -51,12 +51,13 @@ jobs:
           echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
         fi
 
-    - name: setup python
+    - name: Setup python
       uses: actions/setup-python@v2
       with:
         python-version: 3.8 #install the python needed
 
-    - name: execute py script # run the run.py to get the latest data
+      # run compare.py to get the difference between the new and the already deployed versions
+    - name: Execute py script 
       env:
         LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       run: |

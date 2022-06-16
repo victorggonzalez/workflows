@@ -44,18 +44,28 @@ jobs:
           echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
         fi
 
-    - name: Generate matrix
-      id: set-matrix
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8 #install the python needed
+
+      # run compare.py to get the difference between the new and the already deployed versions
+    - name: Execute py script 
       env:
         LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       run: |
-        cd ./staging-versions
-        LATEST_FILE=$(cat $LATEST_FILE_NAME_STAGING)
+        python compare.py staging-versions/$LATEST_FILE_NAME_STAGING deployed/current-staging-versions.json
+
+    - name: Generate matrix
+      id: set-matrix
+      run: |
+        LATEST_FILE=$(cat diff-staging.json)
         echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
 
     - name: echo
       id: echo
       run: |
+        echo $LATEST_FILE_NAME_STAGING
         echo ${{ steps.latest-staging-file.outputs.latest }}
         echo ${{ steps.set-matrix.outputs.matrix }}
 
