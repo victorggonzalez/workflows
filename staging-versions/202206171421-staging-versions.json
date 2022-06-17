@@ -1,10 +1,6 @@
 {
   "include": [
     {
-      "repository": "victorggonzalez/example-voting-app",
-      "tag": "v0.5.30"
-    },
-    {
       "repository": "victorggonzalez/demo-app",
       "tag": "v0.1.2"
     }
