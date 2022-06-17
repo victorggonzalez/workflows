@@ -1,0 +1,8 @@
+{
+  "include": [
+    {
+      "repository": "victorggonzalez/demo-app",
+      "tag": "v0.1.2"
+    }
+  ]
+}
