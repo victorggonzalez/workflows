@@ -32,11 +32,10 @@ jobs:
         'if ((.include[] | select(.repository == $repository)) // null) != null then (.include[] | select(.repository == $repository) | .tag) |= $tag else .include += [{"repository": $repository, "tag": $tag}] end' \
         ./staging-versions/$LATEST_FILE_NAME > ./staging-versions/$FILE_NAME
 
-        jq --arg tag "$TAG" --arg repository "$REPOSITORY" \
-        '(.include[] | select(.repository == $repository) | .tag) |= $tag' ./staging-versions/$LATEST_FILE_NAME > ./staging-versions/$FILE_NAME
-
     - name: Commit step
       id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: ${{ env.FILE_NAME }}
+        # jq --arg tag "$TAG" --arg repository "$REPOSITORY" \
+        # '(.include[] | select(.repository == $repository) | .tag) |= $tag' ./staging-versions/$LATEST_FILE_NAME > ./staging-versions/$FILE_NAME
