@@ -1,4 +1,4 @@
-name: CI ECS repo
+name: zz CI ECS repo
 
 # Controls when the action will run.
 on:

@@ -1,4 +1,4 @@
-name: CI S3 repo
+name: zz CI S3 repo
 
 # Controls when the action will run.
 on:
