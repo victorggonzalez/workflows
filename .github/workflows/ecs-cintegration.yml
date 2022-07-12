@@ -124,6 +124,7 @@ jobs:
         environment-variables: |
           NEXT_PUBLIC_API_HOST=${{ secrets.next-public-api-host }}
           NEXT_PUBLIC_GRAASP_AUTH_HOST=${{ secrets.next-public-graasp-auth-host }}
+          NODE_ENV=production
 
     - name: Modify Amazon ECS task definition with second container
       id: task-def-2
