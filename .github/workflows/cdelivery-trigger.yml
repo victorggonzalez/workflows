@@ -73,13 +73,13 @@ jobs:
     - name: tasty-json-to-markdown
       uses: ConnorBaker/tasty-json-to-markdown-action@v2.0.6
       with:
-        tasty_json_filepath: $LATEST_FILE
+        tasty_json_filepath: $LATEST_FILE_NAME_STAGING
 
 
     - name: Adding markdown
       run: |
         echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
-        echo 'cat $LATEST_FILE_NAME_STAGING | jq .include' >> $GITHUB_STEP_SUMMARY
+        cat $LATEST_FILE_NAME_STAGING | jq .include >> $GITHUB_STEP_SUMMARY
 
   dispatch:
     name: Dispatch Continuous Delivery workflows
