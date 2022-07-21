@@ -75,7 +75,7 @@ jobs:
         LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
       uses: ConnorBaker/tasty-json-to-markdown-action@v2.0.6
       with:
-        tasty_json_filepath: staging-versions/$LATEST_FILE_NAME_STAGING
+        tasty_json_filepath: staging-versions/202207070928-staging-versions.json
 
     - name: Adding markdown
       run: |
