@@ -70,6 +70,11 @@ jobs:
         echo ${{ steps.latest-staging-file.outputs.latest }}
         echo ${{ steps.set-matrix.outputs.matrix }}
 
+    - name: Adding markdown
+        run: |
+          echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
+          echo ${{ steps.set-matrix.outputs.matrix.include }} >> $GITHUB_STEP_SUMMARY
+
   dispatch:
     name: Dispatch Continuous Delivery workflows
     needs: generate-matrix
