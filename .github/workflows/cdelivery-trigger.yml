@@ -66,21 +66,16 @@ jobs:
     - name: echo
       id: echo
       run: |
-        echo $LATEST_FILE_NAME_STAGING
         echo ${{ steps.latest-staging-file.outputs.latest }}
         echo ${{ steps.set-matrix.outputs.matrix }}
-
-    - name: tasty-json-to-markdown
-      env:
-        LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
-      uses: ConnorBaker/tasty-json-to-markdown-action@v2.0.6
-      with:
-        tasty_json_filepath: staging-versions/202207070928-staging-versions.json
 
     - name: Adding markdown
       run: |
         echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
-        NEW_STACK=$(cat staging-versions/202207070928-staging-versions.json | jq .include)
+        echo "|  Repository  |  Tag  |" >> $GITHUB_STEP_SUMMARY
+        NEW_STACK=$(cat diff-staging.json | jq .include)
+        STACK_LENGTH=$(cat diff-staging.json | jq '.include | length')
+        echo $STACK_LENGTH >> $GITHUB_STEP_SUMMARY
         echo $NEW_STACK >> $GITHUB_STEP_SUMMARY
 
   dispatch:
