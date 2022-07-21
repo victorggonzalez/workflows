@@ -71,9 +71,9 @@ jobs:
         echo ${{ steps.set-matrix.outputs.matrix }}
 
     - name: Adding markdown
-        run: |
-          echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
-          echo ${{ steps.set-matrix.outputs.matrix.include }} >> $GITHUB_STEP_SUMMARY
+      run: |
+        echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
+        echo ${{ steps.set-matrix.outputs.matrix.include }} >> $GITHUB_STEP_SUMMARY
 
   dispatch:
     name: Dispatch Continuous Delivery workflows
