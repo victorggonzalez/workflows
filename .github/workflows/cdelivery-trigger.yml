@@ -70,6 +70,12 @@ jobs:
         echo ${{ steps.latest-staging-file.outputs.latest }}
         echo ${{ steps.set-matrix.outputs.matrix }}
 
+    - name: tasty-json-to-markdown
+      uses: ConnorBaker/tasty-json-to-markdown-action@v2.0.6
+      with:
+        tasty_json_filepath: $LATEST_FILE
+
+
     - name: Adding markdown
       run: |
         echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
