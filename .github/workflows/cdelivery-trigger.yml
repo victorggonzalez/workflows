@@ -73,7 +73,7 @@ jobs:
       run: |
         echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
         echo "|  Repository  |  Tag  |" >> $GITHUB_STEP_SUMMARY
-        NEW_STACK=$(cat diff-staging.json | jq .include)
+        NEW_STACK=$(cat diff-staging.json | jq '.include[] | {repository,tag}| join(" ")'
         STACK_LENGTH=$(cat diff-staging.json | jq '.include | length')
         echo $STACK_LENGTH >> $GITHUB_STEP_SUMMARY
         echo $NEW_STACK >> $GITHUB_STEP_SUMMARY
