@@ -72,7 +72,7 @@ jobs:
     - name: Adding markdown
       run: |
         echo '### New stack! :rocket:' >> $GITHUB_STEP_SUMMARY
-        NEW_STACK=$(cat diff-staging.json | jq -r '.include[] | {repository,tag}| join(" <br />")')
+        NEW_STACK=$(cat diff-staging.json | jq -r '.include[] | {repository,tag}| join(" - tag: ")')
         echo $NEW_STACK >> $GITHUB_STEP_SUMMARY
 
   dispatch:
