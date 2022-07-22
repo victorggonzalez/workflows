@@ -9,6 +9,9 @@ jobs:
     outputs:
       commit-hash: ${{ steps.commit.outputs.commit_hash }}
     steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
     - name: create dir
       id: create
       run: |
