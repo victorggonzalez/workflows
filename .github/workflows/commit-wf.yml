@@ -47,5 +47,9 @@ jobs:
         echo ${{ needs.generate-dir.outputs.commit-hash }}
     - name: Check out code
       uses: actions/checkout@v2
-      with:
-        ref: ${{ needs.generate-dir.outputs.commit-hash }}
+      # with:
+      #   ref: ${{ needs.generate-dir.outputs.commit-hash }}
+
+    - name: echo
+      run: |
+        git status
