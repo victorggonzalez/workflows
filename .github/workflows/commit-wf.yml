@@ -12,7 +12,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: create dir
+    - name: create foo
       id: create
       run: |
         echo 'Hello, world' > foo.txt
@@ -51,7 +51,13 @@ jobs:
       with:
         ref: ${{ needs.generate-dir.outputs.commit-hash }}
 
-    - name: echo
+    - name: create bar
+      id: create
+      run: |
+        echo 'Hello, world' > bar.txt
+        git status
+
+    - name: git
       run: |
         git branch tmp
         git fetch
