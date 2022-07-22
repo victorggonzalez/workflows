@@ -1,0 +1,39 @@
+name: Test commit action
+
+on:
+  workflow_dispatch:
+jobs:
+  generate-dir:
+    name: Generate matrix
+    runs-on: ubuntu-latest
+    outputs:
+      commit-hash: ${{ steps.commit.outputs.commit_hash }}
+    steps:
+    - name: create dir
+      id: create
+      run: |
+        mkdir newdir
+
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Deploy new stack to staging environment
+
+    - name: Set commit hash output
+      run: |
+        echo ${{ steps.commit.outputs.commit_hash }}
+        echo ::set-output name=commit-hash::${{ steps.commit.outputs.commit_hash }}
+
+  promote:
+    name: Promote stack to release ready
+    needs: generate-dir
+    runs-on: ubuntu-latest
+    steps:
+    - name: echo
+      run: |
+        echo ${{ needs.generate-dir.outputs.commit-hash }}
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ needs.generate-dir.outputs.commit-hash }}
