@@ -15,8 +15,7 @@ jobs:
     - name: create dir
       id: create
       run: |
-        mkdir newdir
-        cd newdir
+        echo 'Hello, world' > foo.txt
         git status
 
     - name: Commit step
