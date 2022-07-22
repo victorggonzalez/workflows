@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 jobs:
   generate-dir:
-    name: Generate matrix
+    name: Generate dir
     runs-on: ubuntu-latest
     outputs:
       commit-hash: ${{ steps.commit.outputs.commit_hash }}
@@ -15,10 +15,17 @@ jobs:
         mkdir newdir
 
     - name: Commit step
-      id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Deploy new stack to staging environment
+
+    - name: "Run if changes have been detected"
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      run: echo "Changes!"
+
+    - name: "Run if no changes have been detected"
+      if: steps.auto-commit-action.outputs.changes_detected == 'false'
+      run: echo "No Changes!"
 
     - name: Set commit hash output
       run: |
