@@ -22,7 +22,7 @@ jobs:
       id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Deploy new stack to staging environment
+        commit_message: First commit
 
     - name: "Run if changes have been detected"
       if: steps.commit.outputs.changes_detected == 'true'
@@ -45,11 +45,32 @@ jobs:
     - name: echo
       run: |
         echo ${{ needs.generate-dir.outputs.commit-hash }}
+
     - name: Check out code
       uses: actions/checkout@v2
-      # with:
-      #   ref: ${{ needs.generate-dir.outputs.commit-hash }}
+      with:
+        ref: ${{ needs.generate-dir.outputs.commit-hash }}
 
     - name: echo
       run: |
-        git status
+        git branch tmp
+        git checkout master
+        git merge tmp
+
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Second commit
+
+    - name: "Run if changes have been detected"
+      if: steps.commit.outputs.changes_detected == 'true'
+      run: echo "Changes!"
+
+    - name: "Run if no changes have been detected"
+      if: steps.commit.outputs.changes_detected == 'false'
+      run: echo "No Changes!"
+
+    - name: Set commit hash output
+      run: |
+        echo ${{ steps.commit.outputs.commit_hash }}
