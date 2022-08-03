@@ -34,8 +34,3 @@ jobs:
         newman --version
         npm install -g newman-reporter-html
         newman run graasp-deploy.json --reporters cli,html --reporter-html-export postman-report.html  
-
-- uses: matt-ball/newman-action@master
-  with:
-    collection: postman_collection.json
-    environment: postman_environment.json
