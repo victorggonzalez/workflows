@@ -1,0 +1,41 @@
+name: CI - Integration Test 
+
+# Controls when the action will run. 
+# Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  workflow_dispatch:
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+        mongodb-version: [4.2]
+        python-version: [3.7]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Git checkout 
+      uses: actions/checkout@v2
+
+    - name: Setup node
+      id: setup-node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        check-latest: true
+    - name: Setup node
+      id: setup-node
+      run: |
+        newman --version
+        npm install -g newman-reporter-html
+        newman run graasp-deploy.json --reporters cli,html --reporter-html-export postman-report.html  
+
+- uses: matt-ball/newman-action@master
+  with:
+    collection: postman_collection.json
+    environment: postman_environment.json
