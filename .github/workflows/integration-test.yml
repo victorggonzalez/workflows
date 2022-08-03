@@ -28,8 +28,9 @@ jobs:
       with:
         node-version: '16'
         check-latest: true
-    - name: Setup node
-      id: setup-node
+
+    - name: Run newman
+      id: newman
       run: |
         newman --version
         npm install -g newman-reporter-html
