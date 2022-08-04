@@ -37,3 +37,10 @@ jobs:
     - name: newman action
       run: |
         node_modules/newman/bin/newman.js run collection.postman_collection.json -r htmlextra
+        git status
+
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'test commit'
