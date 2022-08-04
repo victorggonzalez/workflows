@@ -31,7 +31,7 @@ jobs:
       id: setup-runner
       run: |
         npm uninstall -g newman
-        npm install --location=global newman newman-reporter-htmlextra
+        npm install --prefix /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules newman-reporter-htmlextra
         echo 'here'
         newman --version
 
