@@ -27,10 +27,9 @@ jobs:
       id: setup-runner
       run: |
         npm list
-        npm install --location=global newman-reporter-htmlextra
+        npm install newman newman-reporter-htmlextra
         npm list
         npm root -g
+        npm install --location=global newman-reporter-htmlextra
         cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
-        ls -l
-        npm install --prefix /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules newman-reporter-htmlextra
         ls -l
