@@ -1,0 +1,33 @@
+name: see sw installed
+
+# Controls when the action will run. 
+# Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Git checkout 
+      uses: actions/checkout@v2
+
+    - name: Setup node
+      id: setup-node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        check-latest: true
+
+    - name: Setup runner
+      id: setup-runner
+      run: |
+        ls -l
+        npm list
+        npm root -g
+        cd /usr/local/lib/node_modules
+        ls -l
