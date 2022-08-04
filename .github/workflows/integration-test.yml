@@ -38,7 +38,7 @@ jobs:
       run: |
         newman --version
         npm install --location=global newman-reporter-html
-        newman run graasp-deploy-test.json -e staging_environment.json --reporters cli,html --reporter-html-export test/results/postman-report.html  
+        newman run graasp-deploy-test.json -e staging_environment.json --reporters cli,html --reporter-html-export postman-report.html  
 
     - name: git status
       id: status
@@ -50,3 +50,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: First commit
+        file_pattern: postman-report.html 
