@@ -30,10 +30,7 @@ jobs:
     - name: Setup runner
       id: setup-runner
       run: |
-        npm uninstall -g newman
-        npm install --prefix /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules newman-reporter-htmlextra
-        echo 'here'
-        newman --version
+        npm install newman newman-reporter-htmlextra
 
     - name: Setup environment secrets
       id: setup-secrets
@@ -45,8 +42,7 @@ jobs:
     - name: Run newman
       id: newman
       run: |
-        newman run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r htmlextra
-        echo 'here'
+        node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,html,htmlextra
 
     - name: git status
       id: status
@@ -56,9 +52,9 @@ jobs:
         cd newman
         ls -l
 
-    # - name: Commit step
-    #   id: commit
-    #   uses: stefanzweifel/git-auto-commit-action@v4
-    #   with:
-    #     commit_message: First commit
-    #     file_pattern: postman-report.html 
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'test commit'
+        file_pattern: newman/*
