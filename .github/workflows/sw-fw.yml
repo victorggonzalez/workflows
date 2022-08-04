@@ -26,9 +26,11 @@ jobs:
     - name: Setup runner
       id: setup-runner
       run: |
-        ls -l
+        npm list
+        npm install --location=global newman-reporter-htmlextra
         npm list
         npm root -g
         cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
         ls -l
         npm install --prefix /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules newman-reporter-htmlextra
+        ls -l
