@@ -6,6 +6,9 @@ name: CI - Integration Test
 on:
   workflow_dispatch:
 
+env:        
+  PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+  EMAIL: ${{ secrets.STAGING_EMAIL }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -24,9 +27,15 @@ jobs:
         node-version: '16'
         check-latest: true
 
+    - name: Setup environment secrets
+      id: setup-secrets
+      run: |
+        cat postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" \
+        '.values[0].value |= $password | .values[1].value|= $email' > staging_environment.json
+
     - name: Run newman
       id: newman
       run: |
         newman --version
         npm install -g newman-reporter-html
-        newman run graasp-deploy-test.json --reporters cli,html --reporter-html-export postman-report.html  
+        newman run graasp-deploy-test.json -e staging_environment.json --reporters cli,html --reporter-html-export postman-report.html  
