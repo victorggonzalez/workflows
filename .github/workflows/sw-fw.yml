@@ -35,3 +35,8 @@ jobs:
         ls -l
         cd
         newman run collection.postman_collection.json -r htmlextra 
+
+    - name: Newman
+      id: newman
+      run: |
+        newman run collection.postman_collection.json -r htmlextra 
