@@ -27,6 +27,14 @@ jobs:
         node-version: '16'
         check-latest: true
 
+    - name: Setup runner
+      id: setup-runner
+      run: |
+        npm uninstall -g newman
+        npm install --location=global newman newman-reporter-htmlextra
+        echo 'here'
+        newman --version
+
     - name: Setup environment secrets
       id: setup-secrets
       run: |
@@ -37,9 +45,6 @@ jobs:
     - name: Run newman
       id: newman
       run: |
-        npm install --location=global newman-reporter-html
-        npm install --location=global newman-reporter-htmlextra
-        echo 'here'
         newman run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r htmlextra
         echo 'here'
 
