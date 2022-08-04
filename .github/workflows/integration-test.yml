@@ -30,24 +30,29 @@ jobs:
     - name: Setup environment secrets
       id: setup-secrets
       run: |
+        cd postman
         cat postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" \
-        '.values[0].value |= $password | .values[1].value|= $email' > staging_environment.json
+        '.values[0].value |= $password | .values[1].value|= $email' > staging.postman_environment.json
 
     - name: Run newman
       id: newman
       run: |
+        cd postman
         newman --version
         npm install --location=global newman-reporter-html
-        newman run graasp-deploy-test.json -e staging_environment.json --reporters cli,html --reporter-html-export postman-report.html  
+        newman run GraaspAPITest.postman_collection.json -e staging.postman_environment.json -r htmlextra
 
     - name: git status
       id: status
       run: |
         git status
+        ls -l
+        cd newman
+        ls -l
 
-    - name: Commit step
-      id: commit
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: First commit
-        file_pattern: postman-report.html 
+    # - name: Commit step
+    #   id: commit
+    #   uses: stefanzweifel/git-auto-commit-action@v4
+    #   with:
+    #     commit_message: First commit
+    #     file_pattern: postman-report.html 
