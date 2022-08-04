@@ -63,4 +63,4 @@ jobs:
     - name: Newman
       id: newman
       run: |
-        newman run collection.postman_collection.json -r htmlextra 
+        npm run newman collection.postman_collection.json -r htmlextra 
