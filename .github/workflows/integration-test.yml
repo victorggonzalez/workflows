@@ -37,11 +37,10 @@ jobs:
     - name: Run newman
       id: newman
       run: |
-        cd postman
-        newman --version
+        npm install --location=global newman-reporter-html
         npm install --location=global newman-reporter-htmlextra
         echo 'here'
-        newman run GraaspAPITest.postman_collection.json -e staging.postman_environment.json -r htmlextra
+        newman run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r htmlextra
         echo 'here'
 
     - name: git status
