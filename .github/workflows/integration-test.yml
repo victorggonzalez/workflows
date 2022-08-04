@@ -42,7 +42,7 @@ jobs:
     - name: Run newman
       id: newman
       run: |
-        node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,html,htmlextra
+        node_modules/newman/bin/newman.js run collection.postman_collection.json -r cli,html,htmlextra
 
     - name: git status
       id: status
