@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "newman": "newman"
+    "newman": "newman collection.postman_collection.json -r htmlextra"
   },
   "repository": {
     "type": "git",
