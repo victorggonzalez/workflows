@@ -35,8 +35,9 @@ jobs:
         cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
         ls -l
 
-    - uses: matt-ball/newman-action@master
-    with:
+    - name: newman action
+      uses: matt-ball/newman-action@master
+      with:
       collection: collection.postman_collection.json
       reporters: '["htmlextra"]'
 
