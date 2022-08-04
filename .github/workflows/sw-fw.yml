@@ -33,8 +33,6 @@ jobs:
         npm install --location=global newman-reporter-htmlextra
         cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
         ls -l
-        cd
-        newman run collection.postman_collection.json -r htmlextra 
 
     - name: Newman
       id: newman
