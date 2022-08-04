@@ -38,10 +38,15 @@ jobs:
       run: |
         newman --version
         npm install --location=global newman-reporter-html
-        newman run graasp-deploy-test.json -e staging_environment.json --reporters cli,html --reporter-html-export postman-report.html  
+        newman run graasp-deploy-test.json -e staging_environment.json --reporters cli,html --reporter-html-export test/results/postman-report.html  
 
-    - name: HTML Preview
-      id: html-preview
-      uses: pavi2410/html-preview-action@v2
+    - name: git status
+      id: status
+      run: |
+        git status
+
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        html_file: 'postman-report.html'
+        commit_message: First commit
