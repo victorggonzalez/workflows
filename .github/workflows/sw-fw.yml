@@ -23,37 +23,14 @@ jobs:
         node-version: '16'
         check-latest: true
 
-    # - name: Cache node modules
-    #   id: cache-npm
-    #   uses: actions/cache@v3
-    #   env:
-    #     cache-name: cache-node-modules
-    #   with:
-    #     # npm cache files are stored in `~/.npm` on Linux/macOS
-    #     path: ~/.npm
-    #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-build-${{ env.cache-name }}-
-    #       ${{ runner.os }}-build-
-    #       ${{ runner.os }}-
-
-    # - if: ${{ steps.cache-npm.outputs.cache-hit == 'false' }}
-    #   name: List the state of node modules
-    #   continue-on-error: true
-    #   run: npm list
-
-    - name: Install dependencies
-      run: npm install
-
     - name: setup
       id: setup
       run: |
+        sudo npm install -g newman-reporter-htmlextra
         npm list
         ls -l
         npm root -g
         cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
-        npm install newman-reporter-htmlextra
-
         ls -l
 
     - name: newman action
