@@ -38,8 +38,8 @@ jobs:
     - name: newman action
       uses: matt-ball/newman-action@master
       with:
-      collection: collection.postman_collection.json
-      reporters: '["htmlextra"]'
+        collection: collection.postman_collection.json
+        reporters: '["htmlextra"]'
 
     - name: Newman
       id: newman
