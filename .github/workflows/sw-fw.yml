@@ -29,5 +29,6 @@ jobs:
         ls -l
         npm list
         npm root -g
-        cd /usr/local/lib/node_modules
+        cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
         ls -l
+        npm install --prefix /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules newman-reporter-htmlextra
