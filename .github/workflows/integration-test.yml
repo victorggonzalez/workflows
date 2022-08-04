@@ -65,5 +65,5 @@ jobs:
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
       run: |
-        echo `[See summary](https://raw.githack.com/victorggonzalez/workflows/main/newman/${{ env.FILE_NAME }})` >> $GITHUB_STEP_SUMMARY
+        echo '[See summary](https://raw.githack.com/victorggonzalez/workflows/main/newman/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
 
