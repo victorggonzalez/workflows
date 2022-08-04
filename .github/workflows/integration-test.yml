@@ -30,7 +30,7 @@ jobs:
     - name: Setup runner
       id: setup-runner
       run: |
-        npm install newman newman-reporter-htmlextra
+        npm install newman newman-reporter-html newman-reporter-htmlextra
 
     - name: Setup environment secrets
       id: setup-secrets
