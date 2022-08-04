@@ -28,11 +28,17 @@ jobs:
       run: |
         npm list
         npm install newman newman-reporter-htmlextra
+        ls -l
         npm list
         npm root -g
         npm install --location=global newman-reporter-htmlextra
         cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
         ls -l
+
+    - uses: matt-ball/newman-action@master
+    with:
+      collection: collection.postman_collection.json
+      reporters: '["htmlextra"]'
 
     - name: Newman
       id: newman
