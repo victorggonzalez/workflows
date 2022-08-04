@@ -37,5 +37,11 @@ jobs:
       id: newman
       run: |
         newman --version
-        npm install -g newman-reporter-html
+        npm install --location=global newman-reporter-html
         newman run graasp-deploy-test.json -e staging_environment.json --reporters cli,html --reporter-html-export postman-report.html  
+
+    - name: HTML Preview
+      id: html-preview
+      uses: pavi2410/html-preview-action@v2
+      with:
+        html_file: 'postman-report.html'
