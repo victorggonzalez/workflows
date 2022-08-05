@@ -45,16 +45,9 @@ jobs:
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/$FILE_NAME
 
-    - name: git status
-      id: status
-      run: |
-        git status
-        ls -l
-        cd newman
-        ls -l
-
     - name: Commit step
       id: commit
+      if: always()
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: 'test commit'
@@ -63,5 +56,6 @@ jobs:
     - name: Generate job summary markdown
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
+      if: always()
       run: |
         echo '[See summary in github pages](https://victorggonzalez.github.io/workflows/newman/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
