@@ -5,6 +5,8 @@ name: CI - Integration Test
 # events but only for the master branch
 on:
   workflow_dispatch:
+  # Allow the workflow to be reusable
+  workflow_call:
   schedule:
     - cron: '0 8 * * *'
 

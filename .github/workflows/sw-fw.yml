@@ -9,38 +9,42 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: Test
+    uses: victorggonzalez/workflows/.github/workflows/integration-test.yml@main
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    - name: Git checkout 
-      uses: actions/checkout@v2
+    # # Steps represent a sequence of tasks that will be executed as part of the job
+    # steps:
+    # - name: Git checkout 
+    #   uses: actions/checkout@v2
 
-    - name: Setup node
-      id: setup-node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-        check-latest: true
+    # - name: Setup node
+    #   id: setup-node
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: '16'
+    #     check-latest: true
 
-    - name: setup
-      id: setup
-      run: |
-        npm install newman
-        npm install newman-reporter-htmlextra
-        npm list
-        ls -l
-        npm root -g
-        cd /opt/hostedtoolcache/node/16.16.0/x64/lib/node_modules
-        ls -l
+    # - name: setup
+    #   id: setup
+    #   run: |
+    #     npm install newman newman-reporter-htmlextra
+    #     npm list
 
-    - name: newman action
-      run: |
-        node_modules/newman/bin/newman.js run collection.postman_collection.json -r htmlextra
-        git status
+    # - name: newman action
+    #   run: |
+    #     node_modules/newman/bin/newman.js run collection.postman_collection.json -r cli,htmlextra
+    #     git status
 
-    - name: Commit step
-      id: commit
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: 'test commit'
+    # - name: Run API Tests
+    #   id: run-newman
+    #   uses: anthonyvscode/newman-action@v1
+    #   with:
+    #     collection: collection.postman_collection.json
+    #     reporters: cli,html,htmlextra
+
+    # - name: Commit step
+    #   id: commit
+    #   uses: stefanzweifel/git-auto-commit-action@v4
+    #   with:
+    #     commit_message: 'test commit'
+    #     file_pattern: newman/*
