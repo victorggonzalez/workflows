@@ -43,7 +43,7 @@ jobs:
     - name: Run newman
       id: newman
       run: |
-        FILE_NAME=$(echo "`date +"%Y%m%d%H%M"`"-collection-run.html)
+        FILE_NAME=$(echo "`date +"%Y-%m-%d-%H-%M"`"-collection-run.html)
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/$FILE_NAME
 
