@@ -5,6 +5,8 @@ name: CI - Integration Test
 # events but only for the master branch
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *'
 
 env:        
   PASSWORD: ${{ secrets.STAGING_PASSWORD }}
