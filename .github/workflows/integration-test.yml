@@ -26,7 +26,7 @@ jobs:
 
     - name: Setup node
       id: setup-node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '16'
         check-latest: true
@@ -56,6 +56,7 @@ jobs:
       with:
         commit_message: 'test commit'
         file_pattern: newman/*
+        branch: feature-123
 
     - name: Generate job summary markdown
       env:
