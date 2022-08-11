@@ -20,7 +20,7 @@ on:
         default: 'build'
         type: string
       version:
-        required: true
+        required: false
         type: string
       sha:
         required: true
