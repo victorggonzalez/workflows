@@ -107,14 +107,14 @@ jobs:
     #           ${{ runner.os }}-yarn-
 
     - name: Cache dependencies
-      id: cache-deps
+      id: cache-build
       uses: actions/cache@v3
       env:
-        cache-name: cache-node-modules
+        cache-name: cache-build
       with:
           # path: '**/node_modules'
           # key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-          path: ~/.npm
+          path: result/build
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
