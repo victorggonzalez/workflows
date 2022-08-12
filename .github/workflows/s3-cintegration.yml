@@ -94,9 +94,9 @@ jobs:
         node-version: '16'
         check-latest: true
 
-    - name: Get Yarn cache path
-      id: yarn-cache
-      run: echo "::set-output name=dir::$(yarn cache dir)"
+    # - name: Get Yarn cache path
+    #   id: yarn-cache
+    #   run: echo "::set-output name=dir::$(yarn cache dir)"
 
     # - name: Yarn cache
     #   uses: actions/cache@v3
@@ -109,30 +109,51 @@ jobs:
     - name: Cache dependencies
       id: cache-deps
       uses: actions/cache@v3
+      env:
+        cache-name: cache-node-modules
       with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          # path: '**/node_modules'
+          # key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
     - name: Install dependencies
       id: install
       if: steps.cache-deps.outputs.cache-hit != 'true'
       run: |
         cd result
-        yarn install --frozen-lockfile
+        npm install --frozen-lockfile
 
     - name: Yarn build dev
       id: build-image
       run: |
         cd result
-        yarn run build
+        npm run build
 
   deploy: 
     needs: build
     name: Deploy to Dev environment
     runs-on: ubuntu-latest
-    environment: 
-      name: dev
     steps:
+    - name: Cache dependencies
+      id: cache-deps
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-node-modules
+      with:
+          # path: '**/node_modules'
+          # key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
