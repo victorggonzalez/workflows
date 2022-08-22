@@ -61,7 +61,8 @@ jobs:
         FILE_NAME: ${{ env.FILE_NAME }}
       if: always()
       run: |
-        echo '[See smoke test summary in github pages](https://victorggonzalez.github.io/graasp-deploy/newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo '[See smoke test summary in github pages](https://victorggonzalez.github.io/workflows/newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo '[Wait for the pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
   api-test:
     name: Graasp API Test
@@ -123,4 +124,4 @@ jobs:
       if: always()
       run: |
         echo '[See API test summary in github pages](https://victorggonzalez.github.io/workflows/newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
-  
+        echo '[Wait for the pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
