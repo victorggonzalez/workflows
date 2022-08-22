@@ -16,53 +16,53 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # api-test:
-  #   runs-on: ubuntu-latest
+  api-test:
+    runs-on: ubuntu-latest
 
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #   - name: Git checkout 
-  #     uses: actions/checkout@v2
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Git checkout 
+      uses: actions/checkout@v2
 
-  #   - name: Setup node
-  #     id: setup-node
-  #     uses: actions/setup-node@v2
-  #     with:
-  #       node-version: '16'
-  #       check-latest: true
+    - name: Setup node
+      id: setup-node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        check-latest: true
 
-  #   - name: Setup runner
-  #     id: setup-runner
-  #     run: |
-  #       npm install newman newman-reporter-htmlextra
+    - name: Setup runner
+      id: setup-runner
+      run: |
+        npm install newman newman-reporter-htmlextra
 
-  #   - name: Setup environment secrets
-  #     id: setup-secrets
-  #     run: |
-  #       cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" \
-  #       '.values[0].value |= $password | .values[1].value|= $email' > postman/staging.postman_environment.json
-  #   - name: Run newman
-  #     id: newman
-  #     run: |
-  #       FILE_NAME=$(echo "`date +"%Y-%m-%d-%H-%M"`"-collection-run.html)
-  #       echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
-  #       node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/$FILE_NAME
+    - name: Setup environment secrets
+      id: setup-secrets
+      run: |
+        cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" \
+        '.values[0].value |= $password | .values[1].value|= $email' > postman/staging.postman_environment.json
+    - name: Run newman
+      id: newman
+      run: |
+        FILE_NAME=$(echo "`date +"%Y-%m-%d-%H-%M"`"-api-test-run.html)
+        echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
+        node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
 
-  #   - name: Commit step
-  #     id: commit
-  #     if: always()
-  #     uses: stefanzweifel/git-auto-commit-action@v4
-  #     with:
-  #       commit_message: 'test commit'
-  #       file_pattern: newman/*
-  #       branch: gh-pages
+    - name: Commit step
+      id: commit
+      if: always()
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'test commit'
+        file_pattern: newman/*
+        branch: gh-pages
 
-  #   - name: Generate job summary markdown
-  #     env:
-  #       FILE_NAME: ${{ env.FILE_NAME }}
-  #     if: always()
-  #     run: |
-  #       echo '[See summary in github pages](https://victorggonzalez.github.io/workflows/newman/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+    - name: Generate job summary markdown
+      env:
+        FILE_NAME: ${{ env.FILE_NAME }}
+      if: always()
+      run: |
+        echo '[See API test summary in github pages](https://victorggonzalez.github.io/workflows/newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
   
   smoke-test:
     # The type of runner that the job will run on
@@ -88,20 +88,13 @@ jobs:
       run: |
         npm install newman newman-reporter-htmlextra
 
-    #   # Set environment variables required to perform the tests
-    # - name: Setup environment secrets
-    #   id: setup-secrets
-    #   run: |
-        # cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" --arg host "$HOST" \
-        # '.values[0].value |= $password | .values[1].value|= $email | .values[2].value|= $host' > postman/staging.postman_environment.json
-
     # Run a set of commands using the runners shell to perform tests
     - name: Run newman
       id: newman
       run: |
         FILE_NAME=$(echo "`date +"%Y-%m-%d-%H-%M"`"-smoke-test-run.html)
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
-        node_modules/newman/bin/newman.js run postman/GraaspSmokeTest.postman_collection.json -e postman/staging.postman_environment.json -r htmlextra --reporter-htmlextra-export ./newman/$FILE_NAME
+        node_modules/newman/bin/newman.js run postman/GraaspSmokeTest.postman_collection.json -r htmlextra --reporter-htmlextra-export ./newman/smoke-test/$FILE_NAME
 
     - name: Commit step
       id: commit
@@ -117,4 +110,4 @@ jobs:
         FILE_NAME: ${{ env.FILE_NAME }}
       if: always()
       run: |
-        echo '[See summary in github pages](https://graasp.github.io/graasp-deploy/newman/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo '[See smoke test summary in github pages](https://graasp.github.io/graasp-deploy/newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY

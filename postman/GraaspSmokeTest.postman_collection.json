@@ -32,9 +32,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{api_host}}/status",
+							"raw": "https://api.stage.graasp.org/status",
+							"protocol": "https",
 							"host": [
-								"{{api_host}}"
+								"api",
+								"stage",
+								"graasp",
+								"org"
 							],
 							"path": [
 								"status"
@@ -74,9 +78,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{explorer_host}}",
+							"raw": "https://explorer.stage.graasp.org/",
+							"protocol": "https",
 							"host": [
-								"{{explorer_host}}"
+								"explorer",
+								"stage",
+								"graasp",
+								"org"
+							],
+							"path": [
+								""
 							]
 						}
 					},
@@ -113,9 +124,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{auth_host}}",
+							"raw": "https://auth.stage.graasp.org/",
+							"protocol": "https",
 							"host": [
-								"{{auth_host}}"
+								"auth",
+								"stage",
+								"graasp",
+								"org"
+							],
+							"path": [
+								""
 							]
 						}
 					},
