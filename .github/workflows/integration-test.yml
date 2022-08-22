@@ -50,7 +50,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: newman/*
-        key: ${{ runner.os }}-primes
+        key: ${{ runner.os }}-newman
 
     # - name: Commit step
     #   id: commit
@@ -80,6 +80,13 @@ jobs:
     steps:
     - name: Git checkout 
       uses: actions/checkout@v3
+
+    - name: Cache Newman
+      id: cache-newman
+      uses: actions/cache@v3
+      with:
+        path: newman/*
+        key: ${{ runner.os }}-newman
 
     - name: Setup node
       id: setup-node
