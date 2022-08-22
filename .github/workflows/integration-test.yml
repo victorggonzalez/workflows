@@ -99,22 +99,14 @@ jobs:
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
 
-    - name: Keep changes in detached HEAD step
-      if: always()
-      run: |
-        git branch tmp
-        git fetch
-        git checkout gh-pages
-        git merge tmp
-
     - name: Commit step
       id: commit
       if: always()
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: 'test commit'
-        file_pattern: newman/*
         branch: gh-pages
+        file_pattern: newman/*
 
     - name: Generate job summary markdown
       env:
