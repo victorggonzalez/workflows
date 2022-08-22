@@ -71,6 +71,7 @@ jobs:
     env:        
       PASSWORD: ${{ secrets.STAGING_PASSWORD }}
       EMAIL: ${{ secrets.STAGING_EMAIL }}
+      DATE: ${{ env.DATE }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
