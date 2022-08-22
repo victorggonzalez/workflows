@@ -52,21 +52,12 @@ jobs:
         path: newman/*
         key: ${{ runner.os }}-newman
 
-    # - name: Commit step
-    #   id: commit
-    #   if: always()
-    #   uses: stefanzweifel/git-auto-commit-action@v4
-    #   with:
-    #     commit_message: 'test commit'
-    #     branch: gh-pages
-    #     file_pattern: newman/*
-
     - name: Generate job summary markdown
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
       if: always()
       run: |
-        echo '[See smoke test summary in github pages](https://graasp.github.io/graasp-deploy/newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo '[See smoke test summary in github pages](https://victorggonzalez.github.io/graasp-deploy/newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
 
   api-test:
     name: Graasp API Test
