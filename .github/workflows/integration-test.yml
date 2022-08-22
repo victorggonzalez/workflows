@@ -12,12 +12,25 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  smoke-test:
-    name: Smoke Test
+  set-up:
+    name: Set up test
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     outputs:
       date: ${{ steps.set-date.outputs.date }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - id: set-date
+      run: |
+        DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
+        echo ::set-output name=date::$DATE
+
+  smoke-test:
+    name: Smoke Test
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env:        
+      DATE: ${{ needs.set-up.outputs.date }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -39,11 +52,11 @@ jobs:
       run: |
         npm install newman newman-reporter-htmlextra
 
-    - id: set-date
-      run: |
-        DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
-        echo "DATE=$DATE" >> $GITHUB_ENV
-        echo ::set-output name=date::$DATE
+    # - id: set-date
+    #   run: |
+    #     DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
+    #     echo "DATE=$DATE" >> $GITHUB_ENV
+    #     echo ::set-output name=date::$DATE
 
     - name: Cache Newman
       id: cache-newman
@@ -70,12 +83,12 @@ jobs:
 
   api-test:
     name: Graasp API Test
-    needs: smoke-test
+    needs: [set-up, smoke-test]
     runs-on: ubuntu-latest
     env:        
       PASSWORD: ${{ secrets.STAGING_PASSWORD }}
       EMAIL: ${{ secrets.STAGING_EMAIL }}
-      DATE: ${{ needs.smoke-test.outputs.date }}
+      DATE: ${{ needs.set-up.outputs.date }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
