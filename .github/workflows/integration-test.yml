@@ -10,14 +10,13 @@ on:
   schedule:
     - cron: '0 8 * * *'
 
-env:        
-  PASSWORD: ${{ secrets.STAGING_PASSWORD }}
-  EMAIL: ${{ secrets.STAGING_EMAIL }}
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   api-test:
     runs-on: ubuntu-latest
+    env:        
+      PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+      EMAIL: ${{ secrets.STAGING_EMAIL }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -41,12 +40,20 @@ jobs:
       run: |
         cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" \
         '.values[0].value |= $password | .values[1].value|= $email' > postman/staging.postman_environment.json
+
     - name: Run newman
       id: newman
       run: |
         FILE_NAME=$(echo "`date +"%Y-%m-%d-%H-%M"`"-api-test-run.html)
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
+
+    - name: Keep changes in detached HEAD step
+      run: |
+        git branch tmp
+        git fetch
+        git checkout gh-pages
+        git merge tmp
 
     - name: Commit step
       id: commit
@@ -95,6 +102,13 @@ jobs:
         FILE_NAME=$(echo "`date +"%Y-%m-%d-%H-%M"`"-smoke-test-run.html)
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspSmokeTest.postman_collection.json -r htmlextra --reporter-htmlextra-export ./newman/smoke-test/$FILE_NAME
+
+    - name: Keep changes in detached HEAD step
+      run: |
+        git branch tmp
+        git fetch
+        git checkout gh-pages
+        git merge tmp
 
     - name: Commit step
       id: commit
