@@ -50,7 +50,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: newman/*
-        key: ${{ runner.os }}-newman
+        key: ${{ runner.os }}-newman-"`date +"%Y-%m-%d-%H-%M"`"
 
     - name: Generate job summary markdown
       env:
