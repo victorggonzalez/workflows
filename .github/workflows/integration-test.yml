@@ -27,6 +27,7 @@ jobs:
 
   smoke-test:
     name: Smoke Test
+    needs: set-up
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:        
