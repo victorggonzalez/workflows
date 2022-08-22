@@ -21,7 +21,7 @@ jobs:
     steps:
     # Check-out repository under $GITHUB_WORKSPACE, so the job can access it
     - name: Git checkout 
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     # Download and cache distribution of the requested Node.js version, and add it to the PATH
     - name: Setup node
@@ -45,14 +45,21 @@ jobs:
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspSmokeTest.postman_collection.json -r htmlextra --reporter-htmlextra-export ./newman/smoke-test/$FILE_NAME
 
-    - name: Commit step
-      id: commit
-      if: always()
-      uses: stefanzweifel/git-auto-commit-action@v4
+    - name: Cache Newman
+      id: cache-newman
+      uses: actions/cache@v3
       with:
-        commit_message: 'test commit'
-        branch: gh-pages
-        file_pattern: newman/*
+        path: newman/*
+        key: ${{ runner.os }}-primes
+
+    # - name: Commit step
+    #   id: commit
+    #   if: always()
+    #   uses: stefanzweifel/git-auto-commit-action@v4
+    #   with:
+    #     commit_message: 'test commit'
+    #     branch: gh-pages
+    #     file_pattern: newman/*
 
     - name: Generate job summary markdown
       env:
@@ -72,7 +79,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Git checkout 
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup node
       id: setup-node
