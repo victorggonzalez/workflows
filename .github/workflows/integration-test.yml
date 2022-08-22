@@ -39,8 +39,8 @@ jobs:
     - name: Setup environment secrets
       id: setup-secrets
       run: |
-        cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" \
-        '.values[0].value |= $password | .values[1].value|= $email' > postman/staging.postman_environment.json
+        cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" --arg host "$HOST" \
+        '.values[0].value |= $password | .values[1].value|= $email | .values[2].value|= $host' > postman/staging.postman_environment.json
 
     - name: Run newman
       id: newman
