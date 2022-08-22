@@ -52,6 +52,7 @@ jobs:
       run: |
         git branch tmp
         git fetch
+        git pull
         git checkout gh-pages
         git merge tmp
 
@@ -107,6 +108,7 @@ jobs:
       run: |
         git branch tmp
         git fetch
+        git pull
         git checkout gh-pages
         git merge tmp
 
