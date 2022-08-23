@@ -32,6 +32,7 @@ jobs:
     needs: set-up
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    if: always()
     env:        
       DATE: ${{ needs.set-up.outputs.date }}
 
@@ -54,12 +55,6 @@ jobs:
       id: setup-runner
       run: |
         npm install newman newman-reporter-htmlextra
-
-    # - id: set-date
-    #   run: |
-    #     DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
-    #     echo "DATE=$DATE" >> $GITHUB_ENV
-    #     echo ::set-output name=date::$DATE
 
     - name: Cache Newman
       id: cache-newman
@@ -88,6 +83,7 @@ jobs:
     name: Graasp API Test
     needs: [set-up, smoke-test]
     runs-on: ubuntu-latest
+    if: always()
     env:        
       PASSWORD: ${{ secrets.STAGING_PASSWORD }}
       EMAIL: ${{ secrets.STAGING_EMAIL }}
