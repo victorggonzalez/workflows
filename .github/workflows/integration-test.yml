@@ -60,7 +60,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: newman/*
-        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
+        key: ${{ runner.os }}-newman-${{ env.DATE }}
 
     # Run a set of commands using the runners shell to perform tests
     - name: Run newman
@@ -163,7 +163,7 @@ jobs:
         path: newman/*
         key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
         restore-keys: |
-          ${{ runner.os }}-newman-${{ env.DATE }}
+          ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
 
     - name: Commit step
       id: commit
