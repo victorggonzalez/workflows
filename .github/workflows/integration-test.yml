@@ -145,7 +145,7 @@ jobs:
 
   commit:
     name: Commit report Test
-    needs: [smoke-test, api-test]
+    needs: [set-up, smoke-test, api-test]
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:        
