@@ -128,14 +128,6 @@ jobs:
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
 
-    - name: update cache on newman run
-      uses: actions/cache@v3
-      with:
-        path: newman/*
-        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
-        restore-keys: |
-          ${{ runner.os }}-newman-${{ env.DATE }}
-
     - name: Generate job summary markdown
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
