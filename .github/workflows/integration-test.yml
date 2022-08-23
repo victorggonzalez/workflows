@@ -15,7 +15,7 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   set-up:
-    name: Set up test
+    name: Set up
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     outputs:
@@ -81,9 +81,8 @@ jobs:
 
   api-test:
     name: Graasp API Test
-    needs: [set-up, smoke-test]
+    needs: set-up
     runs-on: ubuntu-latest
-    if: always()
     env:        
       PASSWORD: ${{ secrets.STAGING_PASSWORD }}
       EMAIL: ${{ secrets.STAGING_EMAIL }}
@@ -127,14 +126,14 @@ jobs:
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
 
-    - name: Commit step
-      id: commit
-      # if: always()
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: 'test commit'
-        branch: gh-pages
-        file_pattern: newman/*
+    # - name: Commit step
+    #   id: commit
+    #   # if: always()
+    #   uses: stefanzweifel/git-auto-commit-action@v4
+    #   with:
+    #     commit_message: 'test commit'
+    #     branch: gh-pages
+    #     file_pattern: newman/*
 
     - name: Generate job summary markdown
       env:
@@ -143,3 +142,30 @@ jobs:
       run: |
         echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
+
+  commit:
+    name: Commit report Test
+    needs: [smoke-test, api-test]
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env:        
+      DATE: ${{ needs.set-up.outputs.date }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Git checkout 
+      uses: actions/checkout@v3
+
+    - name: Cache Newman
+      id: cache-newman
+      uses: actions/cache@v3
+      with:
+        path: newman/*
+        key: ${{ runner.os }}-newman-${{ env.DATE }}
+
+    - name: Commit step
+      id: commit
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'Staging test run ${{ env.DATE }}'
+        branch: gh-pages
+        file_pattern: newman/*
