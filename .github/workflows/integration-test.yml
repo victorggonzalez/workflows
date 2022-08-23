@@ -55,6 +55,7 @@ jobs:
       run: |
         npm install newman newman-reporter-htmlextra
 
+    # Cache output files to improve workflow execution time
     - name: Cache Newman
       id: cache-newman
       uses: actions/cache@v3
@@ -93,6 +94,9 @@ jobs:
     - name: Git checkout 
       uses: actions/checkout@v3
 
+    # Cache output files to improve workflow execution time
+    # key is unique for every run 
+    # restore-keys restores the nearest cache
     - name: Cache Newman
       id: cache-newman
       uses: actions/cache@v3
@@ -148,6 +152,9 @@ jobs:
     - name: Git checkout 
       uses: actions/checkout@v3
 
+    # Cache output files to improve workflow execution time
+    # key is unique for every run 
+    # restore-keys restores the nearest cache
     - name: Cache Newman
       id: cache-newman
       uses: actions/cache@v3
@@ -155,7 +162,7 @@ jobs:
         path: newman/*
         key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
         restore-keys: |
-          ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
+          ${{ runner.os }}-newman-${{ env.DATE }}
 
     - name: Commit step
       id: commit
