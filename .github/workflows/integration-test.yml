@@ -60,7 +60,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: newman/*
-        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ hashFiles('**/newman') }}
+        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-newman
 
     # Run a set of commands using the runners shell to perform tests
     - name: Run newman
@@ -98,7 +100,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: newman/*
-        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ hashFiles('**/newman') }}
+        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-newman
 
     - name: Setup node
       id: setup-node
@@ -151,7 +155,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: newman/*
-        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ hashFiles('**/newman') }}
+        key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-newman
 
     - name: Commit step
       id: commit
