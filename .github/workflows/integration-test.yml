@@ -61,8 +61,6 @@ jobs:
       with:
         path: newman/*
         key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
-        restore-keys: |
-          ${{ runner.os }}-newman
 
     # Run a set of commands using the runners shell to perform tests
     - name: Run newman
@@ -102,7 +100,7 @@ jobs:
         path: newman/*
         key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
         restore-keys: |
-          ${{ runner.os }}-newman
+          ${{ runner.os }}-newman-${{ env.DATE }}
 
     - name: Setup node
       id: setup-node
@@ -157,7 +155,7 @@ jobs:
         path: newman/*
         key: ${{ runner.os }}-newman-${{ env.DATE }}-${{ github.run_id }}
         restore-keys: |
-          ${{ runner.os }}-newman
+          ${{ runner.os }}-newman-${{ env.DATE }}
 
     - name: Commit step
       id: commit
