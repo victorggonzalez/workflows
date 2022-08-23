@@ -9,6 +9,8 @@ on:
   workflow_call:
   schedule:
     - cron: '0 8 * * *'
+env:
+  GH_PAGES_ENDPOINT: 'https://victorggonzalez.github.io/workflows/'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -79,7 +81,7 @@ jobs:
         FILE_NAME: ${{ env.FILE_NAME }}
       if: always()
       run: |
-        echo '[See smoke test summary in github pages](https://victorggonzalez.github.io/workflows/newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo '[See smoke test summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
   api-test:
@@ -142,5 +144,5 @@ jobs:
         FILE_NAME: ${{ env.FILE_NAME }}
       if: always()
       run: |
-        echo '[See API test summary here](https://victorggonzalez.github.io/workflows/newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
