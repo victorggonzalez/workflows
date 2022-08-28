@@ -13,6 +13,7 @@ jobs:
     uses: victorggonzalez/workflows/.github/workflows/integration-test.yml@main
   cypress:
     name: Cypress
+    needs: test
     uses: victorggonzalez/workflows/.github/workflows/e2e-test.yml@main
 
     # # Steps represent a sequence of tasks that will be executed as part of the job
