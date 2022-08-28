@@ -16,6 +16,7 @@ jobs:
         with:
           browser: chrome
           headed: true
+          cache-key: cypress--on-${{ runner.os }}-hash-${{ hashFiles('package-lock.json') }}
         env:
           # pass GitHub token to detect new build vs re-run build
           TEST_EMAIL: ${{secrets.TEST_EMAIL}}
