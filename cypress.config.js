@@ -8,6 +8,7 @@ module.exports = defineConfig({
       config.video = false;
       config.chromeWebSecurity = false;
       config.experimentalSessionAndOrigin = true;
+      config.retires = 2;
 
       // return the updated config object
       return config;
