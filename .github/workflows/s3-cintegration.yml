@@ -59,24 +59,6 @@ env:
   # REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
 
 jobs:
-  test:
-    name: Test
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ inputs.version }}
-      
-    - name: Test job
-      run: |
-        echo "This is the test job"
-        echo ${{ inputs.build-folder }}
-        echo ${{ inputs.version }}
-        echo ${{ env.ECR_REGISTRY }}
-
   build:
     needs: test
     name: Build and sync with S3
@@ -101,10 +83,10 @@ jobs:
     # - name: Yarn cache
     #   uses: actions/cache@v3
     #   with:
-    #       path: ${{ steps.yarn-cache.outputs.dir }}
-    #       key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-    #       restore-keys: |
-    #           ${{ runner.os }}-yarn-
+    #     path: ${{ steps.yarn-cache.outputs.dir }}
+    #     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+    #     restore-keys: |
+    #         ${{ runner.os }}-yarn-
 
     - name: Cache build
       id: cache-build
@@ -128,7 +110,7 @@ jobs:
         cache-name: cache-deps
       with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-modules-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-modules-${{ env.cache-name }}-
             ${{ runner.os }}-modules-
@@ -146,6 +128,24 @@ jobs:
       run: |
         cd result
         npm run build
+
+  test:
+    name: Test
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.version }}
+      
+    - name: Test job
+      run: |
+        echo "This is the test job"
+        echo ${{ inputs.build-folder }}
+        echo ${{ inputs.version }}
+        echo ${{ env.ECR_REGISTRY }}
 
   deploy: 
     needs: build
