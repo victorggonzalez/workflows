@@ -7,6 +7,10 @@ on:
       release-type:
         required: true
         type: string
+    secrets:
+      # GH repo PAT
+      token:
+        required: true
 
 jobs:
   create-release-candidate:
@@ -16,7 +20,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
       with:
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        token: ${{ secrets.token }}
 
     - name: Yarn install
       id: yarn-install
