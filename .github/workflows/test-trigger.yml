@@ -14,7 +14,6 @@ jobs:
     - name: Test
       run: |
         echo "This is the integration test step"
-  # test:
-  #   needs: mock
-  #   uses: victorggonzalez/workflows/.github/workflows/sw-fw.yml@main
-  #   secrets: inherit
+  test:
+    needs: mock
+    uses: victorggonzalez/workflows/.github/workflows/sw-fw.yml@main
