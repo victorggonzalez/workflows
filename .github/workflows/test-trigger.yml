@@ -71,6 +71,11 @@ jobs:
         echo '[See smoke test summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
+    - name: git status step
+      id: git-status
+      run: |
+        git status
+
     - name: Commit step
       id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
