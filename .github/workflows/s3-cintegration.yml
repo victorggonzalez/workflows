@@ -87,21 +87,6 @@ jobs:
     #     restore-keys: |
     #         ${{ runner.os }}-yarn-
 
-    - name: Cache build
-      id: cache-build
-      uses: actions/cache@v3
-      env:
-        cache-name: build
-      with:
-          # path: '**/node_modules'
-          # key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-          path: result/build
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
     - name: Cache deps
       id: cache-deps
       uses: actions/cache@v3
@@ -127,6 +112,20 @@ jobs:
       run: |
         cd result
         npm run build
+
+    - name: Cache build
+      id: cache-build
+      uses: actions/cache@v3
+      env:
+        cache-name: build
+      with:
+          # path: '**/node_modules'
+          # key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          path: result/build
+          key: ${{ runner.os }}-build-${{ hashFiles('**/build') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
   test:
     name: Test
@@ -159,7 +158,7 @@ jobs:
         cache-name: cache-build
       with:
           path: result/build
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('**/build') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
