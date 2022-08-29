@@ -10,14 +10,14 @@ jobs:
   read:
     runs-on: ubuntu-latest
     steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
     - name: Git config
       id: git-config
       run: |
         git config user.name 'github-actions[bot]'
         git config user.email 'github-actions[bot]@users.noreply.github.com'
-    - name: Check out code
-      uses: actions/checkout@v2
-
     - name: Get latest versions file
       id: latest-file
       run: |
