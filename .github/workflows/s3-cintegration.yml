@@ -60,7 +60,6 @@ env:
 
 jobs:
   build:
-    needs: test
     name: Build and sync with S3
     runs-on: ubuntu-latest
     steps:
@@ -92,7 +91,7 @@ jobs:
       id: cache-build
       uses: actions/cache@v3
       env:
-        cache-name: cache-build
+        cache-name: build
       with:
           # path: '**/node_modules'
           # key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
@@ -107,7 +106,7 @@ jobs:
       id: cache-deps
       uses: actions/cache@v3
       env:
-        cache-name: cache-deps
+        cache-name: deps
       with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
@@ -131,6 +130,7 @@ jobs:
 
   test:
     name: Test
+    needs: build
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -148,7 +148,7 @@ jobs:
         echo ${{ env.ECR_REGISTRY }}
 
   deploy: 
-    needs: build
+    needs: test
     name: Deploy to Dev environment
     runs-on: ubuntu-latest
     steps:
