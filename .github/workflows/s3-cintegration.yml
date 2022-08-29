@@ -93,7 +93,7 @@ jobs:
       env:
         cache-name: deps
       with:
-          path: '**/node_modules'
+          path: 'result/node_modules'
           key: ${{ runner.os }}-modules-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-modules-${{ env.cache-name }}-
@@ -105,13 +105,13 @@ jobs:
       if: steps.cache-deps.outputs.cache-hit != 'true'
       run: |
         cd result
-        npm install --frozen-lockfile
+        yarn install --frozen-lockfile
 
     - name: Yarn build dev
       id: build-image
       run: |
         cd result
-        npm run build
+        yarn run build
 
     - name: Cache build
       id: cache-build
@@ -146,7 +146,7 @@ jobs:
       env:
         cache-name: deps
       with:
-          path: '**/node_modules'
+          path: 'result/node_modules'
           key: ${{ runner.os }}-modules-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-modules-${{ env.cache-name }}-
@@ -158,7 +158,7 @@ jobs:
       if: steps.cache-deps.outputs.cache-hit != 'true'
       run: |
         cd result
-        npm install --frozen-lockfile
+        yarn install --frozen-lockfile
       
     - name: Test job
       run: |
