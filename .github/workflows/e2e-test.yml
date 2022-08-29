@@ -1,8 +1,10 @@
 name: End-to-end tests
 on:
-  workflow_dispatch:
   # Allow the workflow to be reusable
   workflow_call:
+  # Allow the workflow to be manually triggered
+  workflow_dispatch:
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -16,9 +18,7 @@ jobs:
         with:
           browser: chrome
           headed: true
-          cache-key: cypress--on-${{ runner.os }}-hash-${{ hashFiles('package-lock.json') }}
         env:
-          # pass GitHub token to detect new build vs re-run build
           TEST_EMAIL: ${{secrets.TEST_EMAIL}}
           TEST_PASSWORD: ${{secrets.TEST_PASSWORD}}
           REACT_APP_GRAASP_PERFORM_HOST_STAGE: ${{secrets.REACT_APP_GRAASP_PERFORM_HOST_STAGE}}

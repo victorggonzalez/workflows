@@ -1,0 +1,23 @@
+name: test trigger stage new stack to staging environment
+
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    steps:
+    # This step runs a single command to execute integation testing
+    - name: Test
+      run: |
+        echo "This is the integration test step"
+    - name: integration-test
+      uses: victorggonzalez/workflows/.github/workflows/integration-test.yml@main
+    - name: e2e-test
+      cypress:
+        name: Cypress
+        uses: victorggonzalez/workflows/.github/workflows/e2e-test.yml@main
+        secrets: inherit
