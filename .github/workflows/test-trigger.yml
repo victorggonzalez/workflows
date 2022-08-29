@@ -13,29 +13,32 @@ env:
   GH_PAGES_ENDPOINT: 'https://victorggonzalez.github.io/workflows/'
 
 jobs:
-  set-up:
-    name: Set up
+  # set-up:
+  #   name: Set up
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     date: ${{ steps.set-date.outputs.date }}
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #   - id: set-date
+  #     run: |
+  #       DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
+  #       echo ::set-output name=date::$DATE
+
+  smoke-test:
+    name: Smoke Test
+    # needs: set-up
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    outputs:
-      date: ${{ steps.set-date.outputs.date }}
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - id: set-date
       run: |
         DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
-        echo ::set-output name=date::$DATE
+        echo "DATE=$DATE" >> $GITHUB_ENV
 
-  smoke-test:
-    name: Smoke Test
-    needs: set-up
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    env:        
-      DATE: ${{ needs.set-up.outputs.date }}
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
     # Check-out repository under $GITHUB_WORKSPACE, so the job can access it
     - name: Git checkout 
       uses: actions/checkout@v3
@@ -81,16 +84,19 @@ jobs:
 
   api-test:
     name: Graasp API Test
-    needs: [set-up]
+    # needs: [set-up]
     runs-on: ubuntu-latest
     env:        
       PASSWORD: ${{ secrets.STAGING_PASSWORD }}
       EMAIL: ${{ secrets.STAGING_EMAIL }}
       API_HOST: ${{ secrets.REACT_APP_API_HOST_STAGE }}
-      DATE: ${{ needs.set-up.outputs.date }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - id: set-date
+      run: |
+        DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
+        echo "DATE=$DATE" >> $GITHUB_ENV
     - name: Git checkout 
       uses: actions/checkout@v3
 
@@ -140,7 +146,7 @@ jobs:
 
   cypress-run:
     name: End-to-End Test
-    needs: set-up
+    # needs: set-up
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
