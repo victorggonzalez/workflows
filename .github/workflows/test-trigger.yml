@@ -17,3 +17,4 @@ jobs:
   test:
     needs: mock
     uses: victorggonzalez/workflows/.github/workflows/sw-fw.yml@main
+    secrets: inherit

@@ -10,9 +10,9 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # test:
-    # name: Test
-    # uses: victorggonzalez/workflows/.github/workflows/integration-test.yml@main
+  test:
+    name: Test
+    uses: victorggonzalez/workflows/.github/workflows/integration-test.yml@main
   cypress:
     name: Cypress
     uses: victorggonzalez/workflows/.github/workflows/e2e-test.yml@main
