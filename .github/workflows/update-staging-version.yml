@@ -1,0 +1,75 @@
+name: Update staging versions
+
+# Controls when the action will run.
+on:
+  workflow_call:
+    inputs:
+      release-type:
+        required: true
+        type: string
+
+jobs:
+  create-release-candidate:
+    name: Create new candidate
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      # The branch, tag or SHA to checkout. When checking out the repository that
+      # triggered a workflow, this defaults to the reference or SHA for that event.
+      # Otherwise, uses the default branch.
+      with:
+        token: ${{ secrets.REPO_PAT }}
+
+    - name: Yarn
+      id: yarn-install
+      run: yarn
+    - name: Git config
+      id: git-config
+      run: |
+        git config user.name 'github-actions[bot]'
+        git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Configuration for major branch
+      if: ${{ inputs.release-type == 'major' }}
+      # Side note, I can run any Linux command here, not just 'echo'
+      run: yarn run release:major
+
+    - name: Configuration for minor branch
+      if: ${{ inputs.release-type == 'minor' }}
+      # Side note, I can run any Linux command here, not just 'echo'
+      run: yarn run release:minor
+
+    - name: Configuration for patch branch
+      if: ${{ inputs.release-type == 'patch' }}
+      # Side note, I can run any Linux command here, not just 'echo'
+      run: yarn run release:patch
+
+    - name: Configuration for first branch
+      if: ${{ inputs.release-type == 'first' }}
+      # Side note, I can run any Linux command here, not just 'echo'
+      run: yarn run release:first
+
+    - name: push tag
+      # Side note, I can run any Linux command here, not just 'echo'
+      run: |
+        git status
+        git tag
+        git push --follow-tags
+
+    - name: Set tag
+      id: set-tag
+      run: |
+        REPOSITORY=$(echo '${{ github.repository }}')
+        TAG=$(git tag)
+        JSON=$(jq --null-input --arg repository "$REPOSITORY" --arg tag "$TAG" '{"repository": $repository, "tag": $tag}')
+        echo ::set-output name=json::${JSON//'%'/'%25'}
+
+    # Trigger an 'on: repository_dispatch' workflow to run in graasp-deploy repository
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.REPO_PAT }}
+        repository: victorggonzalez/workflows
+        event-type: update-staging-version
+        client-payload: ${{steps.set-tag.outputs.json}}
