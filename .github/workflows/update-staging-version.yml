@@ -16,7 +16,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
       with:
-        token: ${{ secrets.REPO_PAT }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
     - name: Yarn install
       id: yarn-install
