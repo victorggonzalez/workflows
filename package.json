@@ -4,8 +4,8 @@
     "newman-reporter-htmlextra": "^1.22.10"
   },
   "devDependencies": {
-    "env-cmd": "^10.1.0",
-    "cypress": "^10.6.0"
+    "cypress": "^10.6.0",
+    "env-cmd": "^10.1.0"
   },
   "scripts": {
     "cypress:open": "env-cmd -f ./.env.stage cypress open",
