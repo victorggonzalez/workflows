@@ -22,7 +22,7 @@ jobs:
 
     - name: Create new staging-versions.json file
       env:
-        REPOSITORY: ${{ github.event.client_payload.repo }}
+        REPOSITORY: ${{ github.event.client_payload.repository }}
         TAG: ${{ github.event.client_payload.tag }}
         LATEST_FILE_NAME: ${{ steps.latest-file.outputs.latest }}
       run: | 
