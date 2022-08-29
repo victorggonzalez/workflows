@@ -167,3 +167,8 @@ jobs:
           REACT_APP_GRAASP_COMPOSE_HOST_STAGE: ${{secrets.REACT_APP_GRAASP_COMPOSE_HOST_STAGE}}
           REACT_APP_GRAASP_EXPLORE_HOST_STAGE: ${{secrets.REACT_APP_GRAASP_EXPLORE_HOST_STAGE}}
           REACT_APP_AUTHENTICATION_HOST_STAGE: ${{secrets.REACT_APP_AUTHENTICATION_HOST_STAGE}}
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
