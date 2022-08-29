@@ -121,16 +121,15 @@ jobs:
         NODE_ENV: ${{ inputs.node-env }}
         REACT_APP_ENABLE_MOCK_API: ${{ inputs.enable-mock-api }}
 
+    # after the test run completes
+    # store any screenshots
+    # NOTE: screenshots will be generated only if E2E test failed
+    # thus we store screenshots only on failures
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: cypress/screenshots
 
-      # after the test run completes
-      # store any screenshots
-      # NOTE: screenshots will be generated only if E2E test failed
-      # thus we store screenshots only on failures
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-
-      - name: coverage report
-        run: npx nyc report --reporter=text-summary
+    - name: coverage report
+      run: npx nyc report --reporter=text-summary
