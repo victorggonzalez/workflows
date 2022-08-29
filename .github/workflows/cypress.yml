@@ -111,7 +111,7 @@ jobs:
         REACT_APP_GRAASP_APP_ID: ${{ inputs.graasp-app-id }}
         REACT_APP_MOCK_API: ${{ inputs.mock-api }}
         NODE_ENV: ${{ inputs.node-env }}
-        REACT_APP_ENABLE_MOCK_API: : ${{ inputs.enable-mock-api }}
+        REACT_APP_ENABLE_MOCK_API: ${{ inputs.enable-mock-api }}
       with:
         install: false
         config: baseUrl=http://localhost:3000
