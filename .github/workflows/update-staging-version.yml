@@ -21,11 +21,12 @@ jobs:
     - name: Yarn install
       id: yarn-install
       run: yarn
-    # - name: Git config
-    #   id: git-config
-    #   run: |
-    #     git config user.name 'github-actions[bot]'
-    #     git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Git config
+      id: git-config
+      run: |
+        git config user.name 'github-actions[bot]'
+        git config user.email 'github-actions[bot]@users.noreply.github.com'
 
     - name: Configuration for major branch
       if: ${{ inputs.release-type == 'major' }}
