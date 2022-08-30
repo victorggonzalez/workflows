@@ -43,16 +43,30 @@ jobs:
               ${{ runner.os }}-cypress-binary-
 
       - name: Install dependencies
-        id: modules
+        id: a
         env:
           OUTPUT: steps.cache-deps.outputs.cache-hit
         if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
         run: echo ${{ env.OUTPUT }}
-
       - name: Install dependencies
-        id: cypress
-        if: steps.cache-cypress-binary.outputs.cache-hit == 'true'
-        run: echo "${{ steps.cache-cypress-binary.outputs.cache-hit }}"
+        id: b
+        env:
+          OUTPUT: steps.cache-deps.outputs.cache-hit
+        if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
+        run: echo ${{ env.OUTPUT }}
+      - name: Install dependencies
+        id: c
+        env:
+          OUTPUT: steps.cache-deps.outputs.cache-hit
+        if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
+        run: echo ${{ env.OUTPUT }}
+      - name: Install dependencies
+        id: d
+        env:
+          OUTPUT: steps.cache-deps.outputs.cache-hit
+        if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
+        run: echo ${{ env.OUTPUT }}
+
 
         # # Install NPM dependencies, cache them correctly
         # # and run all Cypress tests
