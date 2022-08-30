@@ -26,49 +26,24 @@ jobs:
         run: |
           echo $OUTPUT1
 
-      - name: Install a
-        id: a
-        env:
-          OUTPUT1: ${{ github.ref_name == 'main' }}
-          OUTPUT2: ${{ github.ref_name == 'master' }}
-        if: (github.ref_name == 'main') || (github.ref_name == 'master')
-        run: |
-          echo $OUTPUT1
-          echo $OUTPUT2
-
-      - name: Install b
-        id: b
-        env:
-          OUTPUT1: ${{ github.ref_name == 'main' }}
-          OUTPUT2: ${{ github.ref_name == 'master' }}
-        if: (github.ref_name != 'main') || (github.ref_name == 'master')
-        run: |
-          echo $OUTPUT1
-          echo $OUTPUT2
-
-      - name: Install c
-        id: c
-        env:
-          OUTPUT1: ${{ github.ref_name == 'main' }}
-          OUTPUT2: ${{ github.ref_name == 'master' }}
-        if: (github.ref_name == 'main') || (github.ref_name != 'master')
-        run: |
-          echo $OUTPUT1
-          echo $OUTPUT2
-
-      - name: Install d
-        id: d
-        env:
-          OUTPUT1: ${{ github.ref_name == 'main' }}
-          OUTPUT2: ${{ github.ref_name == 'master' }}
+      # Cache dependencies to speed up workflow
+      # path: The file path on the runner to cache or restore.
+      # key: Create cache key using the hashFiles function to create a new cache when dependencies change.
+      # restore-keys: An ordered list of alternative keys to use for finding the cache if no cache hit occurred for key
+      - name: Cache dependencies
+        id: cache-node-modules
         if: (github.ref_name != 'main') || (github.ref_name != 'master')
-        run: |
-          echo $OUTPUT1
-          echo $OUTPUT2
-
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ github.ref_name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-modules-${{ github.ref_name }}-
+              ${{ runner.os }}-modules-
+      # Install dependencies when the cache has not been retrieved
       - name: Install dependencies
         id: install
-        if: (github.ref_name == 'main') || (github.ref_name == 'master')
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install
 
         # # Install NPM dependencies, cache them correctly
