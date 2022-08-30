@@ -5,6 +5,10 @@ on:
   # Allow the workflow to be manually triggered
   workflow_dispatch:
 
+concurrency: 
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -40,6 +44,7 @@ jobs:
           restore-keys: |
               ${{ runner.os }}-modules-${{ github.ref_name }}-
               ${{ runner.os }}-modules-
+
       # Install dependencies when the cache has not been retrieved
       - name: Install dependencies
         id: install
