@@ -20,7 +20,7 @@ jobs:
           check-latest: true
 
       - name: Install a
-        id: a
+        id: echo
         env:
           OUTPUT1: ${{ github.ref_name }}
         run: |
