@@ -44,8 +44,10 @@ jobs:
 
       - name: Install dependencies
         id: modules
+        env:
+          OUTPUT: steps.cache-deps.outputs.cache-hit
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: echo "${{ steps.cache-deps.outputs.cache-hit }}"
+        run: echo ${{ env.OUTPUT }}
 
       - name: Install dependencies
         id: cypress
