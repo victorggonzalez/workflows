@@ -46,7 +46,7 @@ jobs:
         id: modules
         env:
           OUTPUT: steps.cache-deps.outputs.cache-hit
-        if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
+        if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
         run: echo ${{ env.OUTPUT }}
 
       - name: Install dependencies
