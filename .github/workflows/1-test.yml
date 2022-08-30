@@ -48,6 +48,7 @@ jobs:
           OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
         run: echo $OUTPUT
+
       - name: Install b
         id: b
         env:
@@ -67,6 +68,10 @@ jobs:
         if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
         run: echo $OUTPUT
 
+      - name: Install dependencies
+        id: install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: yarn install
 
         # # Install NPM dependencies, cache them correctly
         # # and run all Cypress tests
