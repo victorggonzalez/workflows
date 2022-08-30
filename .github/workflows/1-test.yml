@@ -45,27 +45,27 @@ jobs:
       - name: Install a
         id: a
         env:
-          OUTPUT: ${{steps.cache-deps.outputs.cache-hit}}
+          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
-        run: echo ${{ env.OUTPUT }}
+        run: echo $OUTPUT
       - name: Install b
         id: b
         env:
-          OUTPUT: ${{steps.cache-deps.outputs.cache-hit}}
+          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
-        run: echo ${{ env.OUTPUT }}
+        run: echo $OUTPUT
       - name: Install c
         id: c
         env:
-          OUTPUT: ${{steps.cache-deps.outputs.cache-hit}}
+          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
-        run: echo ${{ env.OUTPUT }}
+        run: echo $OUTPUT
       - name: Install d
         id: d
         env:
-          OUTPUT: ${{steps.cache-deps.outputs.cache-hit}}
+          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
-        run: echo ${{ env.OUTPUT }}
+        run: echo $OUTPUT
 
 
         # # Install NPM dependencies, cache them correctly
