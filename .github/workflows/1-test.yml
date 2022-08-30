@@ -22,9 +22,16 @@ jobs:
       - name: Install a
         id: a
         env:
-          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
-          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
-        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
+          OUTPUT1: ${{ github.ref_name }}
+        run: |
+          echo $OUTPUT1
+
+      - name: Install a
+        id: a
+        env:
+          OUTPUT1: ${{ github.ref_name == 'main' }}
+          OUTPUT2: ${{ github.ref_name == 'master' }}
+        if: ${{ github.ref_name == 'main' }} || ${{ github.ref_name == 'master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
@@ -32,9 +39,9 @@ jobs:
       - name: Install b
         id: b
         env:
-          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
-          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
-        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
+          OUTPUT1: ${{ github.ref_name == 'main' }}
+          OUTPUT2: ${{ github.ref_name == 'master' }}
+        if: ${{ github.ref_name == 'main' }} || ${{ github.ref_name == 'master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
@@ -42,9 +49,9 @@ jobs:
       - name: Install c
         id: c
         env:
-          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
-          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
-        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
+          OUTPUT1: ${{ github.ref_name == 'main' }}
+          OUTPUT2: ${{ github.ref_name == 'master' }}
+        if: ${{ github.ref_name == 'main' }} || ${{ github.ref_name == 'master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
@@ -52,16 +59,16 @@ jobs:
       - name: Install d
         id: d
         env:
-          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
-          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
-        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
+          OUTPUT1: ${{ github.ref_name == 'main' }}
+          OUTPUT2: ${{ github.ref_name == 'master' }}
+        if: ${{ github.ref_name == 'main' }} || ${{ github.ref_name == 'master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
 
       - name: Install dependencies
         id: install
-        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
+        if: ${{ github.ref_name == 'main' }} || ${{ github.ref_name == 'master' }}
         run: yarn install
 
         # # Install NPM dependencies, cache them correctly
