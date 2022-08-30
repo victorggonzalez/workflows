@@ -45,28 +45,42 @@ jobs:
       - name: Install a
         id: a
         env:
-          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
-        run: echo $OUTPUT
+        run: |
+          echo $OUTPUT1
+          echo $OUTPUT2
 
       - name: Install b
         id: b
         env:
-          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
-        run: echo $OUTPUT
+        run: |
+          echo $OUTPUT1
+          echo $OUTPUT2
+
       - name: Install c
         id: c
         env:
-          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
-        run: echo $OUTPUT
+        run: |
+          echo $OUTPUT1
+          echo $OUTPUT2
+
       - name: Install d
         id: d
         env:
-          OUTPUT: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
+          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
         if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
-        run: echo $OUTPUT
+        run: |
+          echo $OUTPUT1
+          echo $OUTPUT2
 
       - name: Install dependencies
         id: install
