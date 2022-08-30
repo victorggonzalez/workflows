@@ -19,35 +19,12 @@ jobs:
           node-version: '16'
           check-latest: true
 
-      - name: Cache deps
-        id: cache-deps
-        uses: actions/cache@v3
-        env:
-          cache-name: deps
-        with:
-            path: '**/node_modules'
-            key: ${{ runner.os }}-modules-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-modules-${{ env.cache-name }}-
-              ${{ runner.os }}-modules-
-              ${{ runner.os }}-
-
-      - name: Cache Cypress Binary
-        id: cache-cypress-binary
-        uses: actions/cache@v3
-        with:
-          path: '~/.cache/Cypress'
-          key: ${{ runner.os }}-cypress-binary-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-              ${{ runner.os }}-cypress-binary-${{ github.ref_name }}-
-              ${{ runner.os }}-cypress-binary-
-
       - name: Install a
         id: a
         env:
-          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
-          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
-        if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
+          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
+          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
+        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
@@ -55,9 +32,9 @@ jobs:
       - name: Install b
         id: b
         env:
-          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
-          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
-        if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit == 'true')
+          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
+          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
+        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
@@ -65,9 +42,9 @@ jobs:
       - name: Install c
         id: c
         env:
-          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
-          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
-        if: (steps.cache-deps.outputs.cache-hit == 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
+          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
+          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
+        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
@@ -75,16 +52,16 @@ jobs:
       - name: Install d
         id: d
         env:
-          OUTPUT1: ${{ steps.cache-deps.outputs.cache-hit }}
-          OUTPUT2: ${{ steps.cache-cypress-binary.outputs.cache-hit }}
-        if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
+          OUTPUT1: ${{ github.ref == 'ref/heads/main' }}
+          OUTPUT2: ${{ github.ref == 'ref/heads/master' }}
+        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
         run: |
           echo $OUTPUT1
           echo $OUTPUT2
 
       - name: Install dependencies
         id: install
-        if: (steps.cache-deps.outputs.cache-hit != 'true') || (steps.cache-cypress-binary.outputs.cache-hit != 'true')
+        if: ${{ github.ref == 'ref/heads/main' }} || ${{ github.ref == 'ref/heads/master' }}
         run: yarn install
 
         # # Install NPM dependencies, cache them correctly
