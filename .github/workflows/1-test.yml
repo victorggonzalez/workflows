@@ -45,12 +45,12 @@ jobs:
       - name: Install dependencies
         id: modules
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: echo ${{ steps.cache-deps.outputs.cache-hit }}
+        run: echo "${{ steps.cache-deps.outputs.cache-hit }}"
 
       - name: Install dependencies
         id: cypress
         if: steps.cache-cypress-binary.outputs.cache-hit != 'true'
-        run: echo ${{ steps.cache-cypress-binary.outputs.cache-hit }}
+        run: echo "${{ steps.cache-cypress-binary.outputs.cache-hit }}"
 
         # # Install NPM dependencies, cache them correctly
         # # and run all Cypress tests
