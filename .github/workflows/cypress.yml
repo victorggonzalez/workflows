@@ -6,57 +6,57 @@ on:
     # Define inputs which can be passed from the caller workflow
     inputs:
       # build-folder: path to build folder inside repository, if needed
-      graasp-compose-host:
+      graasp-compose-host-test:
         required: false
         type: string
-      graasp-authentication-host:
+      graasp-authentication-host-test:
         required: false
         type: string
-      node-env:
+      node-env-test:
         required: false
         type: string
-      hidden-item-tag-id:
+      hidden-item-tag-id-test:
         required: false
         type: string
-      public-tag-id:
+      public-tag-id-test:
         required: false
         type: string
-      next-public-google-analytics-id:
+      next-public-google-analytics-id-test:
         required: false
         type: string
-      next-public-published-tag-id:
+      next-public-published-tag-id-test:
         required: false
         type: string
-      next-public-api-host:
+      next-public-api-host-test:
         required: false
         type: string
-      next-public-graasp-perform-host:
+      next-public-graasp-perform-host-test:
         required: false
         type: string
-      next-public-graasp-authentication-host:
+      next-public-graasp-authentication-host-test:
         required: false
         type: string
-      next-public-node-env:
+      next-public-node-env-test:
         required: false
         type: string
-      graasper-id:
+      graasper-id-test:
         required: false
         type: string
-      graasp-domain:
+      graasp-domain-test:
         required: false
         type: string
-      graasp-app-id:
+      graasp-app-id-test:
         required: false
         type: string
-      mock-api:
+      mock-api-test:
         required: false
         type: string
-      enable-mock-api:
+      enable-mock-api-test:
         required: false
         type: string
     # Define secrets which can be passed from the caller workflow
     secrets:
-      api-host: 
+      api-host-test: 
         required: false
 
 jobs:
