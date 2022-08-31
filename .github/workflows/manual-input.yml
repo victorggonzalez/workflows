@@ -44,5 +44,5 @@ jobs:
       run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
 
     - name: Deploying a specific staging stack
-      if: github.event.inputs.test == yes
+      if: github.event.inputs.test == 'yes'
       run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
