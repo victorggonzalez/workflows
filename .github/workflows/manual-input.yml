@@ -11,7 +11,7 @@ on:
       test:
         type: choice
         description: Execute test job?
-        default: no
+        default: ''
         options: 
         - yes
         - no
@@ -20,6 +20,14 @@ on:
       use-emoji:
         type: boolean
         description: Execute test job
+      print_tags:
+        description: 'True to print to STDOUT'
+        required: true 
+        type: boolean 
+      tags:
+        description: 'Test scenario tags'
+        required: true 
+        type: string
 
 env:        
   STACK: ${{ inputs.stack }}
