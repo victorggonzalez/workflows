@@ -15,6 +15,18 @@ on:
         default: ''
         # Input has to be provided for the workflow to run
         required: false
+      test:
+        type: choice
+        description: Execute test job?
+        default: yes
+        options: 
+        - yes
+        - no
+      message:
+        required: true
+      use-emoji:
+        type: boolean
+        description: Execute test job
 
 env:        
   STACK: ${{ inputs.stack }}
@@ -25,55 +37,7 @@ jobs:
   greet:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      latest: ${{ steps.latest-staging-file.outputs.latest }}
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Deploying a specific staging stack
-      if: "${{ env.STACK != '' }}"
-      run: echo ${{ env.STACK }}
-
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Get latest staging versions file
-      id: latest-staging-file
-      run: |
-        if [[ "${{ inputs.stack }}" == "" ]]; then
-          cd ./staging-versions
-          LATEST_FILE_NAME_STAGING=$(ls -Ar | head -n 1)
-          echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
-        fi
-        if [[ "${{ inputs.stack }}" != "" ]]; then
-          LATEST_FILE_NAME_STAGING=${{ env.STACK }}
-          echo ::set-output name=latest::${LATEST_FILE_NAME_STAGING}
-        fi
-
-    - name: Setup python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8 #install the python needed
-
-      # run compare.py to get the difference between the new and the already deployed versions
-    - name: Execute py script 
-      env:
-        LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
-      run: |
-        python compare.py staging-versions/$LATEST_FILE_NAME_STAGING deployed/current-staging-versions.json
-
-    - name: Generate matrix
-      id: set-matrix
-      run: |
-        LATEST_FILE=$(cat diff-staging.json)
-        echo ::set-output name=matrix::${LATEST_FILE//'%'/'%25'}
-
-    - name: echo
-      id: echo
-      env:
-        LATEST_FILE_NAME_STAGING: ${{ steps.latest-staging-file.outputs.latest }}
-      run: |
-        echo ${{ steps.latest-staging-file.outputs.latest }}
-        echo $LATEST_FILE_NAME_STAGING
-        echo ${{ steps.set-matrix.outputs.matrix }}
+    run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
