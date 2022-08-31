@@ -8,17 +8,10 @@ on:
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
-      stack:
-        # Friendly description to be shown in the UI instead of 'stack'
-        description: 'Specify a stack to deploy to staging'
-        # Default value if no value is explicitly provided
-        default: ''
-        # Input has to be provided for the workflow to run
-        required: false
       test:
         type: choice
         description: Execute test job?
-        default: yes
+        default: no
         options: 
         - yes
         - no
@@ -40,4 +33,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - name: Deploying a specific staging stack
-    run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
+      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
+
+    - name: Deploying a specific staging stack
+      if: github.event.inputs.use-emoji == true
+      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
+
+    - name: Deploying a specific staging stack
+      if: github.event.inputs.test == true
+      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
+
+    - name: Deploying a specific staging stack
+      if: github.event.inputs.test == yes
+      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
