@@ -17,17 +17,6 @@ on:
 jobs:
   # This workflow contains a single job called "greet"
   greet:
-    # The type of runner that the job will run on
-    if: inputs.test-execution == true
-    runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    - name: Deploying a specific staging stack
-      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
-
-    - name: Deploying a specific staging stack
-      if: inputs.test-execution != true
-      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
-
-    - name: Deploying a specific staging stack
-      run: echo "${{ github.event.inputs.message }} ${{ fromJSON('["", "🥳"]')[github.event.inputs.use-emoji == 'true'] }} ${{ github.event.inputs.name }}"
+    uses: victorggonzalez/workflows/.github/workflows/manualreusable.yml@main
+    with:
+      test-execution: ${{ inputs.test-execution }}

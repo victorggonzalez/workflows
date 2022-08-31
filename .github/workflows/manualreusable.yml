@@ -1,0 +1,23 @@
+name: Reusable workflow that runs Continuous Integration pipeline for S3 deployments. 
+
+# Control when the action will run
+on:
+  # Allow the workflow to be reusable
+  workflow_call:
+    # Define inputs which can be passed from the caller workflow
+    inputs:
+      test-execution:
+        required: true
+        type: boolean
+        default: true
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  greet:
+    # The type of runner that the job will run on
+    if: inputs.test-execution == true
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Deploying a specific staging stack
+      run: echo "hello world"
