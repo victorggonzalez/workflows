@@ -28,7 +28,6 @@ on:
 # Set environment variables that are available to the steps of all jobs in the workflow
 env:
   SHOULD_DEPLOY: ${{ (github.event_name == 'workflow_dispatch') || (github.ref_name == 'main') || (github.ref_name == 'master') }}
-  DAY_OF_WEEK: Monday
 
 # This workflow is made up of one job that calls the reusable workflow in graasp-deploy
 jobs:
@@ -58,7 +57,7 @@ jobs:
     # Replace with repository name
     name: Deploy
     needs: [build, test]
-    if: ${{ env.DAY_OF_WEEK == 'Monday' }}
+    if: ${{ always() && ((github.event_name == 'workflow_dispatch') || (github.ref_name == 'main') || (github.ref_name == 'master')) }}
     runs-on: ubuntu-latest
     steps:
     - name: Echo release type
