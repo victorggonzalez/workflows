@@ -1,6 +1,6 @@
 # This workflow triggers a new workflow inside the graasp-deploy repository. It passes a json 
 # with the repository name and the latest tag pushed from the caller repository. 
-name: Push new tag to graasp-deploy repository
+name: Choice input
 
 # Controls when the action will run
 on:
@@ -30,6 +30,7 @@ jobs:
   graasp-deploy-update-staging-version-workflow:
     # Replace with repository name
     name: Update staging version caller template
+    runs-on: ubuntu-latest
     steps:
     - name: Echo release type
       env: 
