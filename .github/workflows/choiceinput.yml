@@ -21,6 +21,9 @@ on:
         - major
         default: patch
         required: true
+# Set environment variables that are available to the steps of all jobs in the workflow
+env:
+  SHOULD_DEPLOY: (github.event_name == 'workflow_dispatch') || (github.ref_name == 'main') || (github.ref_name == 'master')
 
 # This workflow is made up of one job that calls the reusable workflow in graasp-deploy
 jobs:
@@ -31,4 +34,6 @@ jobs:
     - name: Echo release type
       env: 
         RELEASE_TYPE: ${{ inputs.release-type }}
-      run: echo $RELEASE_TYPE
+      run: |
+        echo $RELEASE_TYPE
+        echo $SHOULD_DEPLOY
