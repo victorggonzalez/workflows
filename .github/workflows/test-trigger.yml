@@ -70,6 +70,14 @@ jobs:
       run: |
         echo '[See smoke test summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
+
+    - name: Keep changes in detached HEAD step
+      run: |
+        git branch tmp
+        git fetch
+        git checkout gh-pages
+        git merge tmp
+
     - name: Commit step
       id: commit
       if: always()
@@ -129,6 +137,14 @@ jobs:
       run: |
         echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
+
+    - name: Keep changes in detached HEAD step
+      run: |
+        git branch tmp
+        git fetch
+        git checkout gh-pages
+        git merge tmp
+
     - name: Commit step
       id: commit
       uses: stefanzweifel/git-auto-commit-action@v4
