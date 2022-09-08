@@ -63,6 +63,7 @@ jobs:
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
     - name: Keep changes in detached HEAD step
+      if: always()
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
       run: |
@@ -97,8 +98,6 @@ jobs:
 
     - name: Git checkout 
       uses: actions/checkout@v3
-      with:
-        ref: 'gh-pages'
 
     - name: Setup node
       id: setup-node
@@ -131,12 +130,12 @@ jobs:
     - name: Generate job summary markdown
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
-      # if: always()
       run: |
         echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
     - name: Keep changes in detached HEAD step
+      if: always()
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
       run: |
