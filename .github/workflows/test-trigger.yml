@@ -76,6 +76,13 @@ jobs:
         echo '[See smoke test summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
+    - name: Keep changes in detached HEAD step
+      run: |
+        git branch tmp-1
+        git fetch
+        git checkout main
+        git merge tmp-1
+
     - name: Commit step
       id: commit
       if: always()
@@ -141,6 +148,13 @@ jobs:
       run: |
         echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
+
+    - name: Keep changes in detached HEAD step
+      run: |
+        git branch tmp-2
+        git fetch
+        git checkout main
+        git merge tmp-2
 
     - name: Commit step
       id: commit
