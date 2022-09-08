@@ -67,7 +67,7 @@ jobs:
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
       run: |
-        git stash push -m smoke-test-run ./newman/smoke-test/$FILE_NAME
+        git stash push -m smoke-test-run newman/smoke-test/$FILE_NAME
         git checkout -- *
         git stash apply smoke-test-run
 
@@ -139,7 +139,7 @@ jobs:
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
       run: |
-        git stash push -m api-test-run ./newman/api-test/$FILE_NAME
+        git stash push -m api-test-run newman/api-test/$FILE_NAME
         git checkout -- *
         git stash apply api-test-run
 
