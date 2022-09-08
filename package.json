@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "newman": "^5.3.2",
-    "newman-reporter-htmlextra": "^1.22.10"
+    "newman-reporter-htmlextra": "^1.22.11"
   },
   "devDependencies": {
     "cypress": "^10.6.0",
