@@ -42,6 +42,8 @@ jobs:
     # Check-out repository under $GITHUB_WORKSPACE, so the job can access it
     - name: Git checkout 
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     # Download and cache distribution of the requested Node.js version, and add it to the PATH
     - name: Setup node
@@ -81,7 +83,7 @@ jobs:
       with:
         commit_message: 'Staging test run ${{ env.DATE }}'
         branch: gh-pages
-        file_pattern: newman/*
+        file_pattern: ./newman/
 
   api-test:
     name: Graasp API Test
@@ -98,8 +100,11 @@ jobs:
       run: |
         DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
         echo "DATE=$DATE" >> $GITHUB_ENV
+
     - name: Git checkout 
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Setup node
       id: setup-node
@@ -143,7 +148,7 @@ jobs:
       with:
         commit_message: 'Staging test run ${{ env.DATE }}'
         branch: gh-pages
-        file_pattern: newman/*
+        file_pattern: ./newman/
 
   cypress-run:
     name: End-to-End Test
