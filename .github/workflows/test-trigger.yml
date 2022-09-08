@@ -69,22 +69,22 @@ jobs:
         git status
         ls -l
         cat package.json
-    # - name: Generate job summary markdown
-    #   env:
-    #     FILE_NAME: ${{ env.FILE_NAME }}
-    #   if: always()
-    #   run: |
-    #     echo '[See smoke test summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
-    #     echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
+    - name: Generate job summary markdown
+      env:
+        FILE_NAME: ${{ env.FILE_NAME }}
+      if: always()
+      run: |
+        echo '[See smoke test summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
-    # - name: Commit step
-    #   id: commit
-    #   if: always()
-    #   uses: stefanzweifel/git-auto-commit-action@v4
-    #   with:
-    #     commit_message: 'Staging test run ${{ env.DATE }}'
-    #     branch: gh-pages
-    #     file_pattern: newman/*
+    - name: Commit step
+      id: commit
+      if: always()
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'Staging test run ${{ env.DATE }}'
+        branch: gh-pages
+        file_pattern: newman/*
 
   # api-test:
   #   name: Graasp API Test
