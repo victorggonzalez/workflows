@@ -67,15 +67,18 @@ jobs:
         node_modules/newman/bin/newman.js run postman/GraaspSmokeTest.postman_collection.json -r htmlextra --reporter-htmlextra-export ./newman/smoke-test/$FILE_NAME
 
     - name: Git stash
+      if: always()
       run: git stash
 
     # Check-out repository under $GITHUB_WORKSPACE, so the job can access it
     - name: Git checkout gh-pages
+      if: always()
       uses: actions/checkout@v3
       with:
         ref: 'gh-pages'
 
     - name: Git stash
+      if: always()
       run: git stash apply
 
     - name: Generate job summary markdown
