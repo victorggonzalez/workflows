@@ -74,10 +74,9 @@ jobs:
     - name: Keep changes in detached HEAD step
       if: always()
       run: |
-        git branch tmp
-        git fetch
-        git checkout gh-pages
-        git merge tmp
+        git status
+        ls -l
+        cat package.json
 
     - name: Commit step
       id: commit
@@ -88,69 +87,69 @@ jobs:
         branch: gh-pages
         file_pattern: newman/*
 
-  api-test:
-    name: Graasp API Test
-    # needs: [set-up]
-    runs-on: ubuntu-latest
-    env:        
-      PASSWORD: ${{ secrets.STAGING_PASSWORD }}
-      EMAIL: ${{ secrets.STAGING_EMAIL }}
-      API_HOST: ${{ secrets.REACT_APP_API_HOST_STAGE }}
+  # api-test:
+  #   name: Graasp API Test
+  #   # needs: [set-up]
+  #   runs-on: ubuntu-latest
+  #   env:        
+  #     PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+  #     EMAIL: ${{ secrets.STAGING_EMAIL }}
+  #     API_HOST: ${{ secrets.REACT_APP_API_HOST_STAGE }}
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    - id: set-date
-      run: |
-        DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
-        echo "DATE=$DATE" >> $GITHUB_ENV
-    - name: Git checkout 
-      uses: actions/checkout@v3
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #   - id: set-date
+  #     run: |
+  #       DATE=$(echo "`date +"%Y-%m-%d-%H-%M"`")
+  #       echo "DATE=$DATE" >> $GITHUB_ENV
+  #   - name: Git checkout 
+  #     uses: actions/checkout@v3
 
-    - name: Setup node
-      id: setup-node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-        check-latest: true
+  #   - name: Setup node
+  #     id: setup-node
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: '16'
+  #       check-latest: true
 
-    - name: Setup runner
-      id: setup-runner
-      run: |
-        npm install newman newman-reporter-htmlextra
-    # Set environment variables required to perform the tests
-    - name: Setup environment secrets
-      id: setup-secrets
-      run: |
-        cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" --arg api_host "$API_HOST" \
-        '.values[0].value |= $password | .values[1].value|= $email | .values[2].value|= $api_host' > postman/staging.postman_environment.json
-    # Run a set of commands using the runners shell to perform tests
-    - name: Run newman
-      id: newman
-      continue-on-error: true
-      run: |
-        FILE_NAME=$(echo $DATE-api-test-run.html)
-        echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
-        node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
-    - name: Generate job summary markdown
-      if: always()
-      env:
-        FILE_NAME: ${{ env.FILE_NAME }}
-      run: |
-        echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
-        echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
+  #   - name: Setup runner
+  #     id: setup-runner
+  #     run: |
+  #       npm install newman newman-reporter-htmlextra
+  #   # Set environment variables required to perform the tests
+  #   - name: Setup environment secrets
+  #     id: setup-secrets
+  #     run: |
+  #       cat postman/postman_environment.json | jq -r --arg password "$PASSWORD" --arg email "$EMAIL" --arg api_host "$API_HOST" \
+  #       '.values[0].value |= $password | .values[1].value|= $email | .values[2].value|= $api_host' > postman/staging.postman_environment.json
+  #   # Run a set of commands using the runners shell to perform tests
+  #   - name: Run newman
+  #     id: newman
+  #     continue-on-error: true
+  #     run: |
+  #       FILE_NAME=$(echo $DATE-api-test-run.html)
+  #       echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
+  #       node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
+  #   - name: Generate job summary markdown
+  #     if: always()
+  #     env:
+  #       FILE_NAME: ${{ env.FILE_NAME }}
+  #     run: |
+  #       echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+  #       echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
-    - name: Keep changes in detached HEAD step
-      if: always()
-      run: |
-        git branch tmp
-        git fetch
-        git checkout gh-pages
-        git merge tmp
+  #   - name: Keep changes in detached HEAD step
+  #     if: always()
+  #     run: |
+  #       git branch tmp
+  #       git fetch
+  #       git checkout gh-pages
+  #       git merge tmp
 
-    - name: Commit step
-      id: commit
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: 'Staging test run ${{ env.DATE }}'
-        branch: gh-pages
-        file_pattern: newman/*
+  #   - name: Commit step
+  #     id: commit
+  #     uses: stefanzweifel/git-auto-commit-action@v4
+  #     with:
+  #       commit_message: 'Staging test run ${{ env.DATE }}'
+  #       branch: gh-pages
+  #       file_pattern: newman/*
