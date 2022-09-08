@@ -104,6 +104,12 @@ jobs:
         event-type: staging-deployment
         client-payload: ${{steps.set-json.outputs.json}}
 
+    - name: Generate step summary markdown
+      env:
+        FILE_NAME: ${{ env.FILE_NAME }}
+      run: |
+        echo '[![See workflow](https://github.com/${{matrix.repo}}/actions/workflows/s3-cintegration-reusable.yml/badge.svg)](https://github.com/${{matrix.repo}}/actions/workflows/s3-cintegration-reusable.yml)' >> $GITHUB_STEP_SUMMARY
+
   test:
     name: Test
     needs: dispatch
