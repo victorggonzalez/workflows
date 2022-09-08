@@ -1,22 +1,21 @@
 name: 1- test
 
 # Controls when the action will run. 
-# Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
-  workflow_dispatch:
   # Allow the workflow to be reusable
   workflow_call:
+  # Allow the workflow to be manually triggered
+  workflow_dispatch:
+  # Allow the workflow to be automatically triggered everyday at 3 am
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 3 * * *'
 env:
   GH_PAGES_ENDPOINT: 'https://victorggonzalez.github.io/workflows/'
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-
   smoke-test:
     name: Smoke Test
-    # needs: set-up
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -62,15 +61,6 @@ jobs:
         echo '[See smoke test summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/smoke-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
-    - name: Keep changes in detached HEAD step
-      if: always()
-      env:
-        FILE_NAME: ${{ env.FILE_NAME }}
-      run: |
-        git stash push -m smoke-test-run newman/smoke-test/$FILE_NAME
-        git checkout -- *
-        git stash apply smoke-test-run
-
     - name: Commit step
       id: commit
       if: always()
@@ -78,11 +68,10 @@ jobs:
       with:
         commit_message: 'Staging test run ${{ env.DATE }}'
         branch: gh-pages
-        file_pattern: ./newman/
+        file_pattern: newman/*
 
   api-test:
     name: Graasp API Test
-    # needs: [set-up]
     runs-on: ubuntu-latest
     env:        
       PASSWORD: ${{ secrets.STAGING_PASSWORD }}
@@ -130,18 +119,10 @@ jobs:
     - name: Generate job summary markdown
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
-      run: |
-        echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
-        echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
-
-    - name: Keep changes in detached HEAD step
       if: always()
-      env:
-        FILE_NAME: ${{ env.FILE_NAME }}
       run: |
-        git stash push -m api-test-run newman/api-test/$FILE_NAME
-        git checkout -- *
-        git stash apply api-test-run
+        echo '[See summary in github pages](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
+        echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
     - name: Commit step
       id: commit
@@ -149,33 +130,4 @@ jobs:
       with:
         commit_message: 'Staging test run ${{ env.DATE }}'
         branch: gh-pages
-        file_pattern: ./newman/
-
-  # cypress-run:
-  #   name: End-to-End Test
-  #   # needs: set-up
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-
-  #     # Install NPM dependencies, cache them correctly
-  #     # and run all Cypress tests
-  #     - name: Cypress run
-  #       uses: cypress-io/github-action@v4
-  #       with:
-  #         browser: chrome
-  #         headed: true
-  #         retries: { "runMode": 3, "openMode": 0 }
-  #       env:
-  #         TEST_EMAIL: ${{secrets.TEST_EMAIL}}
-  #         TEST_PASSWORD: ${{secrets.TEST_PASSWORD}}
-  #         REACT_APP_GRAASP_PERFORM_HOST_STAGE: ${{secrets.REACT_APP_GRAASP_PERFORM_HOST_STAGE}}
-  #         REACT_APP_GRAASP_COMPOSE_HOST_STAGE: ${{secrets.REACT_APP_GRAASP_COMPOSE_HOST_STAGE}}
-  #         REACT_APP_GRAASP_EXPLORE_HOST_STAGE: ${{secrets.REACT_APP_GRAASP_EXPLORE_HOST_STAGE}}
-  #         REACT_APP_AUTHENTICATION_HOST_STAGE: ${{secrets.REACT_APP_AUTHENTICATION_HOST_STAGE}}
-  #     - uses: actions/upload-artifact@v2
-  #       if: failure()
-  #       with:
-  #         name: cypress-screenshots
-  #         path: cypress/screenshots
+        file_pattern: newman/*
