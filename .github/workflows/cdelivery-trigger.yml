@@ -107,8 +107,13 @@ jobs:
     - name: Generate step summary markdown
       env:
         REPO: ${{matrix.repo}}
+        LINK: `https://badgen.net/badge/${{matrix.repo}}/dispatched/orange`
       run: |
-        echo '[![See workflow](https://github.com/${{env.REPO}}/actions/workflows/s3-cintegration-reusable.yml/badge.svg)](https://github.com/${{env.REPO}}/actions/workflows/s3-cintegration-reusable.yml)' >> $GITHUB_STEP_SUMMARY
+        echo $REPO
+        REPO=$(echo ${{matrix.repo}})
+        echo $LINK
+        echo '[![See workflow](${{env.LINK}})](https://github.com/${{env.REPO}}/actions/)' >> $GITHUB_STEP_SUMMARY
+        echo '[See workflow](https://github.com/${{env.REPO}}/actions/)' >> $GITHUB_STEP_SUMMARY
 
   test:
     name: Test
