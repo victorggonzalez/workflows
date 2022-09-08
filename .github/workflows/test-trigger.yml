@@ -64,6 +64,7 @@ jobs:
     # Check status
     - name: check status
       id: check-status
+      if: always()
       run: |
         git status
         ls -l
