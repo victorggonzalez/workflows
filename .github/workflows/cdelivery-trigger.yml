@@ -106,9 +106,9 @@ jobs:
 
     - name: Generate step summary markdown
       env:
-        FILE_NAME: ${{ env.FILE_NAME }}
+        REPO: ${{matrix.repo}}
       run: |
-        echo '[![See workflow](https://github.com/${{matrix.repo}}/actions/workflows/s3-cintegration-reusable.yml/badge.svg)](https://github.com/${{matrix.repo}}/actions/workflows/s3-cintegration-reusable.yml)' >> $GITHUB_STEP_SUMMARY
+        echo '[![See workflow](https://github.com/${{env.REPO}}/actions/workflows/s3-cintegration-reusable.yml/badge.svg)](https://github.com/${{env.REPO}}/actions/workflows/s3-cintegration-reusable.yml)' >> $GITHUB_STEP_SUMMARY
 
   test:
     name: Test
