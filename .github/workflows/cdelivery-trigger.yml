@@ -84,7 +84,7 @@ jobs:
     strategy:
       matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     steps:
-    - run: echo ${{matrix.repo}}
+    - run: echo ${{matrix.repository}}
 
     - run: echo ${{matrix.tag}}
 
@@ -106,11 +106,11 @@ jobs:
 
     - name: Generate step summary markdown
       env:
-        REPO: ${{matrix.repo}}
-        LINK: 'https://badgen.net/badge/${{matrix.repo}}/dispatched/orange'
+        REPO: ${{matrix.repository}}
+        LINK: 'https://badgen.net/badge/icon/${{matrix.repository}}?icon=github&label'
       run: |
         echo $REPO
-        REPO=$(echo ${{matrix.repo}})
+        REPO=$(echo ${{matrix.repository}})
         echo $LINK
         echo '[![See workflow](${{env.LINK}})](https://github.com/${{env.REPO}}/actions/)' >> $GITHUB_STEP_SUMMARY
         echo '[See workflow](https://github.com/${{env.REPO}}/actions/)' >> $GITHUB_STEP_SUMMARY
