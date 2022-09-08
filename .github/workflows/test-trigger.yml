@@ -72,6 +72,7 @@ jobs:
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
     - name: Keep changes in detached HEAD step
+      if: always()
       run: |
         git branch tmp
         git fetch
@@ -131,14 +132,15 @@ jobs:
         echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
         node_modules/newman/bin/newman.js run postman/GraaspAPITest.postman_collection.json -e postman/staging.postman_environment.json -r htmlextra --reporter-htmlextra-export ./newman/api-test/$FILE_NAME
     - name: Generate job summary markdown
+      if: always()
       env:
         FILE_NAME: ${{ env.FILE_NAME }}
-      # if: always()
       run: |
         echo '[See API test summary here](${{env.GH_PAGES_ENDPOINT}}newman/api-test/${{ env.FILE_NAME }})' >> $GITHUB_STEP_SUMMARY
         echo 'Please wait for the github pages deployment to finish (this can take around 2 minutes).' >> $GITHUB_STEP_SUMMARY
 
     - name: Keep changes in detached HEAD step
+      if: always()
       run: |
         git branch tmp
         git fetch
