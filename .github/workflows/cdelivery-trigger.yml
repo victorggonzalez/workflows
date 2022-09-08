@@ -106,14 +106,9 @@ jobs:
 
     - name: Generate step summary markdown
       env:
-        REPO: ${{matrix.repository}}
-        LINK: 'https://badgen.net/badge/icon/${{matrix.repository}}?icon=github&label'
+        BADGE: 'https://badgen.net/badge/icon/See%20workflow/blue?icon=github&label'
       run: |
-        echo $REPO
-        REPO=$(echo ${{matrix.repository}})
-        echo $LINK
-        echo '[![See workflow](${{env.LINK}})](https://github.com/${{env.REPO}}/actions/)' >> $GITHUB_STEP_SUMMARY
-        echo '[See workflow](https://github.com/${{env.REPO}}/actions/)' >> $GITHUB_STEP_SUMMARY
+        echo '[![See workflow](${{env.BADGE}})](https://github.com/${{matrix.repository}}/actions/)' >> $GITHUB_STEP_SUMMARY
 
   test:
     name: Test
