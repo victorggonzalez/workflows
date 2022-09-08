@@ -160,6 +160,7 @@ jobs:
         with:
           browser: chrome
           headed: true
+          retries: { "runMode": 3, "openMode": 0 }
         env:
           TEST_EMAIL: ${{secrets.TEST_EMAIL}}
           TEST_PASSWORD: ${{secrets.TEST_PASSWORD}}
