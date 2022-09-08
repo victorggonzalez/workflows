@@ -107,7 +107,7 @@ jobs:
     - name: Generate step summary markdown
       env:
         REPO: ${{matrix.repo}}
-        LINK: `https://badgen.net/badge/${{matrix.repo}}/dispatched/orange`
+        LINK: 'https://badgen.net/badge/${{matrix.repo}}/dispatched/orange'
       run: |
         echo $REPO
         REPO=$(echo ${{matrix.repo}})
