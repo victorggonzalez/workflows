@@ -4,6 +4,7 @@ name: Choice input
 
 # Controls when the action will run
 on:
+  push:
   # Allow the workflow to be manually triggered
   workflow_dispatch:
     # Inputs the workflow accepts.
@@ -15,12 +16,9 @@ on:
         # Input does not have to be provided for the workflow to run
         type: choice
         options: 
-        - first
-        - patch        
-        - minor        
-        - major
-        default: patch
-        required: true
+        - yes
+        - no        
+        default: yes
       test-execution:
         type: boolean
         default: true
