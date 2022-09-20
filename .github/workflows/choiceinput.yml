@@ -60,7 +60,7 @@ jobs:
     steps:
     - name: Echo release type
       env: 
-        RELEASE_TYPE: ${{ inputs.release-type }}
+        TEST_EXECUTION: ${{ inputs.test-execution }}
       run: |
-        echo $RELEASE_TYPE
+        echo $TEST_EXECUTION
         echo $SHOULD_DEPLOY
