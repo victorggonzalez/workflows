@@ -6,9 +6,9 @@ name: CI - Integration Test
 on:
   workflow_dispatch:
   # Allow the workflow to be reusable
-  workflow_call:
-  schedule:
-    - cron: '0 8 * * *'
+  # workflow_call:
+  # schedule:
+    # - cron: '0 8 * * *'
 env:
   GH_PAGES_ENDPOINT: 'https://victorggonzalez.github.io/workflows/'
 
