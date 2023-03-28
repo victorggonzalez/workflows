@@ -7,8 +7,8 @@ on:
   # Allow the workflow to be manually triggered
   workflow_dispatch:
   # Allow the workflow to be automatically triggered everyday at 3 am
-  schedule:
-    - cron: '0 3 * * *'
+  # schedule:
+    # - cron: '0 3 * * *'
 env:
   GH_PAGES_ENDPOINT: 'https://victorggonzalez.github.io/workflows/'
 
